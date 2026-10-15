@@ -68,6 +68,7 @@
       var y=window.scrollY||0, vh=window.innerHeight;
       var solid=!hero || y > Math.max(40, hero.offsetHeight - 90);
       hdr.classList.toggle('solid', solid);
+      hdr.classList.toggle('glass', !solid && y > 8);
       setTheme(solid?'#ffffff':'#071B36');
       if(prog){ var max=html.scrollHeight - vh; prog.style.transform='scaleX('+(max>0?Math.min(1,y/max):0)+')'; }
       if(steps){
