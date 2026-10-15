@@ -780,8 +780,9 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 .wa{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:calc(16px + env(safe-area-inset-bottom));z-index:45;display:flex;flex-direction:column;align-items:flex-end;gap:14px;pointer-events:none;transition:opacity .3s ease,visibility 0s}
 .wa>*{pointer-events:auto}
 .menu-open .wa{opacity:0;visibility:hidden;transition:opacity .2s ease,visibility 0s .2s}
-.wa-btn{position:relative;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:#25D366;box-shadow:0 10px 24px -8px rgba(7,27,54,.45),0 2px 6px rgba(7,27,54,.18);transition:transform .45s var(--ease),box-shadow .45s var(--ease)}
-.wa-btn svg{width:28px;height:28px}
+.wa-btn{position:relative;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;background:#25D366;box-shadow:0 10px 24px -8px rgba(7,27,54,.45),0 2px 6px rgba(7,27,54,.18);transition:transform .45s var(--ease),box-shadow .45s var(--ease)}
+.wa-btn svg{width:32px;height:32px}
+.wa-btn:focus-visible{outline:2px solid var(--navy);outline-offset:4px}
 .wa-btn:hover{transform:translateY(-2px);box-shadow:0 16px 30px -10px rgba(7,27,54,.5),0 2px 6px rgba(7,27,54,.18)}
 .wa-btn::after{content:"";position:absolute;inset:0;border-radius:50%;border:1.5px solid #25D366;opacity:0}
 .wa.on .wa-btn::after{animation:wa-ring 2.4s var(--ease) 2}
@@ -805,7 +806,7 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 .wa-go{margin-top:14px;display:flex;align-items:center;justify-content:center;gap:10px;height:46px;border-radius:2px;background:var(--navy);color:#fff;font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;transition:background .3s}
 .wa-go::before{content:"";width:8px;height:8px;border-radius:50%;background:#25D366}
 .wa-go:hover{background:var(--aco)}
-@media (min-width:768px){.wa{right:28px;bottom:28px}}
+@media (min-width:768px){.wa{right:28px;bottom:28px}.wa-btn{width:62px;height:62px}}
 
 /* reduced motion */
 @media (prefers-reduced-motion:reduce){
