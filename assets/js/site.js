@@ -45,6 +45,8 @@
   } else { targets.forEach(function(t){t.classList.add('in');}); }
 
   /* ---------- intro + hero entrance ---------- */
+  /* a abertura toca ao chegar no site e a cada recarregamento; entre páginas do próprio site, não */
+  window.addEventListener('pagehide',function(){ try{sessionStorage.setItem('pf-nav',Date.now())}catch(e){} });
   var intro=d.getElementById('intro');
   function ready(delay){ html.style.setProperty('--h0',(delay||0)+'s'); body.classList.add('ready'); d.querySelectorAll('.ent .split, .ent [data-img]').forEach(function(s){s.classList.add('in')}); }
   if(reduce || html.classList.contains('no-intro') || !intro){ if(intro) intro.remove(); ready(.05); }
@@ -52,7 +54,6 @@
     void intro.offsetWidth; setTimeout(function(){ intro.classList.add('go'); }, 20);
     setTimeout(function(){ intro.classList.add('out'); ready(.06); }, 1500);
     setTimeout(function(){ intro.remove(); }, 2400);
-    try{sessionStorage.setItem('pf-intro','1')}catch(e){}
   }
 
   /* ---------- header state + progresso de leitura ---------- */

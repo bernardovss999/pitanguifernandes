@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@200;300;400;500&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/site.css">
-<script>document.documentElement.classList.add('js');try{if(sessionStorage.getItem('pf-intro'))document.documentElement.classList.add('no-intro')}catch(e){}</script>
+<script>document.documentElement.classList.add('js');try{var n=performance.getEntriesByType('navigation')[0],v=+sessionStorage.getItem('pf-nav');sessionStorage.removeItem('pf-nav');if(n&&n.type!=='reload'&&v&&Date.now()-v<15000)document.documentElement.classList.add('no-intro')}catch(e){}</script>
 </head>
 <body>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
