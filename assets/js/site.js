@@ -55,18 +55,23 @@
     try{sessionStorage.setItem('pf-intro','1')}catch(e){}
   }
 
-  /* ---------- header state ---------- */
-  var hdr=d.getElementById('hdr'), hero=d.querySelector('.ent');
+  /* ---------- header state + progresso de leitura ---------- */
+  var hdr=d.getElementById('hdr'), hero=d.querySelector('.ent'), prog=hdr.querySelector('.prog');
+  var themeMeta=d.querySelector('meta[name="theme-color"]');
   var steps=d.getElementById('steps'), stepEls=steps?steps.querySelectorAll('.step'):[], fill=steps?steps.querySelector('.fill'):null;
   var ticking=false;
+  function setTheme(c){ if(themeMeta) themeMeta.setAttribute('content',c); }
   function onScroll(){
-    if(ticking) return; ticking=true;
+    if(ticking || body.classList.contains('menu-open')) return; ticking=true;
     requestAnimationFrame(function(){
       ticking=false;
-      var y=window.scrollY||0;
-      hdr.classList.toggle('solid', !hero || y > Math.max(40, hero.offsetHeight - 90));
+      var y=window.scrollY||0, vh=window.innerHeight;
+      var solid=!hero || y > Math.max(40, hero.offsetHeight - 90);
+      hdr.classList.toggle('solid', solid);
+      setTheme(solid?'#ffffff':'#071B36');
+      if(prog){ var max=html.scrollHeight - vh; prog.style.transform='scaleX('+(max>0?Math.min(1,y/max):0)+')'; }
       if(steps){
-        var r=steps.getBoundingClientRect(), vh=window.innerHeight;
+        var r=steps.getBoundingClientRect();
         var wide=window.innerWidth>=1024;
         var start=vh*.82, p;
         if(wide){ p=(start - r.top)/(vh*.45); }
@@ -81,42 +86,87 @@
   window.addEventListener('resize',onScroll);
   onScroll();
 
-  /* ---------- WhatsApp: balão ao rolar ou após 3 s parado no topo ---------- */
+  /* ---------- WhatsApp: balão após 3 s parado no topo ou ao começar a rolar; fica até ser fechado ---------- */
+  var wa=d.getElementById('wa'), waPop=d.getElementById('wa-pop');
   (function(){
-    var pop=d.getElementById('wa-pop'), x=d.getElementById('wa-x'); if(!pop) return;
-    var KEY='pf-wa', done=false, timer=null;
-    try{ if(sessionStorage.getItem(KEY)) done=true; }catch(e){}
-    if(d.getElementById('form')) done=true; /* na página de contato o WhatsApp já está à vista */
+    if(!waPop) return;
+    var KEY='pf-wa-x', shown=false, closed=false, timer=null, startY=window.scrollY||0;
+    try{ if(sessionStorage.getItem(KEY)) closed=true; }catch(e){}
+    if(d.getElementById('form')) closed=true; /* na página de contato o WhatsApp já está à vista */
     function show(){
-      if(done) return; done=true;
-      try{sessionStorage.setItem(KEY,'1')}catch(e){}
-      pop.classList.add('show'); pop.setAttribute('aria-hidden','false');
+      if(shown || closed) return;
+      if(body.classList.contains('menu-open')){ arm(); return; }
+      shown=true; clearTimeout(timer);
+      waPop.classList.add('show'); waPop.setAttribute('aria-hidden','false'); wa.classList.add('on');
       window.removeEventListener('scroll',onS);
     }
-    function hide(){ pop.classList.remove('show'); pop.setAttribute('aria-hidden','true'); }
-    function arm(){ clearTimeout(timer); if((window.scrollY||0)<60) timer=setTimeout(show,3000); }
-    function onS(){
-      if((window.scrollY||0) > window.innerHeight*.5){ clearTimeout(timer); setTimeout(show,500); }
-      else arm();
+    function hide(){
+      closed=true; clearTimeout(timer);
+      waPop.classList.remove('show'); waPop.setAttribute('aria-hidden','true');
+      try{sessionStorage.setItem(KEY,'1')}catch(e){}
     }
-    x.addEventListener('click',hide);
-    pop.querySelector('.wa-go').addEventListener('click',hide);
-    d.addEventListener('keydown',function(e){ if(e.key==='Escape') hide(); });
-    if(!done){ window.addEventListener('scroll',onS,{passive:true}); setTimeout(arm, html.classList.contains('no-intro')?300:1400); }
+    function arm(){ clearTimeout(timer); timer=setTimeout(function(){ if((window.scrollY||0)<120) show(); else arm(); },3000); }
+    function onS(){ if(Math.abs((window.scrollY||0)-startY) > 60){ clearTimeout(timer); setTimeout(show,350); } }
+    d.getElementById('wa-x').addEventListener('click',hide);
+    waPop.querySelector('.wa-go').addEventListener('click',hide);
+    d.addEventListener('keydown',function(e){ if(e.key==='Escape' && shown && !closed) hide(); });
+    if(!closed){
+      setTimeout(function(){ startY=window.scrollY||0; window.addEventListener('scroll',onS,{passive:true}); if(startY<120) arm(); }, html.classList.contains('no-intro')?400:1300);
+    }
   })();
 
-  /* ---------- mobile menu ---------- */
-  var burger=d.getElementById('burger'), mnav=d.getElementById('mnav');
+  /* ---------- menu mobile ---------- */
+  var burger=d.getElementById('burger'), mnav=d.getElementById('mnav'), lockY=0, leaveT=null;
+  function lockScroll(on){
+    /* iOS ignora overflow:hidden no body; fixar o body é o único bloqueio confiável */
+    if(on){
+      lockY=window.scrollY||0;
+      body.style.position='fixed'; body.style.top=(-lockY)+'px'; body.style.left='0'; body.style.right='0'; body.style.width='100%';
+    } else {
+      body.style.position=''; body.style.top=''; body.style.left=''; body.style.right=''; body.style.width='';
+      html.style.scrollBehavior='auto'; window.scrollTo(0,lockY); html.style.scrollBehavior='';
+    }
+  }
   function setMenu(open){
-    body.classList.toggle('menu-open',open);
+    if(open===body.classList.contains('menu-open')) return;
+    clearTimeout(leaveT);
+    if(open){
+      var light=hdr.classList.contains('solid');
+      mnav.classList.toggle('light',light); body.classList.toggle('menu-light',light);
+      mnav.classList.remove('leaving');
+      mnav.querySelectorAll('.picked').forEach(function(li){ li.classList.remove('picked'); });
+      lockScroll(true);
+      body.classList.add('menu-open');
+      mnav.scrollTop=0;
+    } else {
+      body.classList.remove('menu-open');
+      lockScroll(false);
+      onScroll();
+    }
     burger.setAttribute('aria-expanded',open);
     burger.setAttribute('aria-label',open?'Fechar menu':'Abrir menu');
     mnav.setAttribute('aria-hidden',!open);
-    body.style.overflow=open?'hidden':'';
+    if(open) mnav.removeAttribute('inert'); else mnav.setAttribute('inert','');
+    setTheme(open ? (body.classList.contains('menu-light')?'#ffffff':'#071B36') : (hdr.classList.contains('solid')?'#ffffff':'#071B36'));
   }
   burger.addEventListener('click',function(){ setMenu(!body.classList.contains('menu-open')); });
-  mnav.querySelectorAll('a').forEach(function(a){ a.addEventListener('click',function(){ setMenu(false); }); });
+  mnav.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click',function(e){
+      if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||e.button) return;
+      if(a.target==='_blank'){ setMenu(false); return; }
+      if(a.getAttribute('aria-current')==='page'){ e.preventDefault(); setMenu(false); return; }
+      var li=a.closest('li');
+      if(reduce || !li) return;
+      /* a opção escolhida avança, as demais recuam; só então a página muda */
+      e.preventDefault();
+      li.classList.add('picked'); mnav.classList.add('leaving');
+      var href=a.href; leaveT=setTimeout(function(){ location.href=href; },380);
+    });
+  });
   d.addEventListener('keydown',function(e){ if(e.key==='Escape' && body.classList.contains('menu-open')){ setMenu(false); burger.focus(); } });
+  /* ao voltar pelo botão "voltar" (cache do navegador), a página não pode reaparecer com o menu aberto */
+  window.addEventListener('pageshow',function(e){ if(e.persisted && body.classList.contains('menu-open')) setMenu(false); mnav.classList.remove('leaving'); });
+  window.addEventListener('resize',function(){ if(window.innerWidth>=1100 && body.classList.contains('menu-open')) setMenu(false); });
 
   /* ---------- comparativo (matriz sem valores e sem taxas) ---------- */
   if(d.getElementById('matrix')) (function(){

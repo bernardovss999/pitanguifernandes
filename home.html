@@ -118,21 +118,24 @@
       <a href="compromissos.html">Compromissos</a>
     </nav>
     <a class="btn" href="contato.html">Conversar</a>
-    <button class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false" aria-controls="mnav"><span></span><span></span></button>
+    <button class="burger" id="burger" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mnav"><span class="bt" aria-hidden="true"><b>Menu</b><b>Fechar</b></span><span class="bl" aria-hidden="true"><i></i><i></i></span></button>
   </div>
+  <span class="prog" aria-hidden="true"></span>
 </header>
 
-<div class="mnav" id="mnav" aria-hidden="true">
+<div class="mnav" id="mnav" aria-hidden="true" inert>
+  <p class="mk">Navegação</p>
   <ol>
-    <li><a href="home.html" aria-current="page" style="--i:0">Início</a></li>
-    <li><a href="governanca.html" style="--i:1">Governança</a></li>
-    <li><a href="metodo.html" style="--i:2">Método</a></li>
-    <li><a href="planos.html" style="--i:3">Planos</a></li>
-    <li><a href="familia.html" style="--i:4">Família</a></li>
-    <li><a href="compromissos.html" style="--i:5">Compromissos</a></li>
+    <li style="--i:0"><a href="home.html" aria-current="page"><span class="mt">Início</span><span class="md">Apresentação da Pitangui Fernandes</span></a></li>
+    <li style="--i:1"><a href="governanca.html"><span class="mt">Governança</span><span class="md">O que fazemos, em quatro pilares</span></a></li>
+    <li style="--i:2"><a href="metodo.html"><span class="mt">Método</span><span class="md">Da conversa à rotina, em quatro passos</span></a></li>
+    <li style="--i:3"><a href="planos.html"><span class="mt">Planos</span><span class="md">Essencial, Premium e Concierge</span></a></li>
+    <li style="--i:4"><a href="familia.html"><span class="mt">Família</span><span class="md">As pessoas por trás do nome</span></a></li>
+    <li style="--i:5"><a href="compromissos.html"><span class="mt">Compromissos</span><span class="md">Seis regras que constam do contrato</span></a></li>
   </ol>
   <div class="mfoot">
-    <a class="btn light" href="contato.html">Conversar</a>
+    <a class="btn" href="contato.html">Conversar sobre a sua casa</a>
+    <a class="mwa" href="https://wa.me/5521967072931?text=Ol%C3%A1%2C%20gostaria%20de%20conversar%20sobre%20a%20gest%C3%A3o%20da%20minha%20casa." target="_blank" rel="noopener"><small>WhatsApp</small><span class="num">(21) 96707-2931</span></a>
     <p>Empresa de família · Niterói, RJ</p>
   </div>
 </div>
@@ -140,16 +143,33 @@
 <main id="conteudo">
 <!-- ============ 01 ABERTURA ============ -->
 <section class="hero ent" id="topo" aria-labelledby="h-hero">
-  <svg class="stairs" viewBox="0 0 711 1050" aria-hidden="true">
+  <svg class="hart" viewBox="-200 -120 840 880" aria-hidden="true">
     <defs>
-      <linearGradient id="gT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#D9DEE6"/></linearGradient>
-      <linearGradient id="gL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2A4A7A"/><stop offset="1" stop-color="#0B2245"/></linearGradient>
-      <linearGradient id="gR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D3D9E2"/><stop offset=".5" stop-color="#97A2B4"/><stop offset="1" stop-color="#4E5D78"/></linearGradient>
+      <path id="hP" fill-rule="evenodd" d="M 412 114 L 275 34 L 248 20 L 20 152 L 20 336 L 105 385 L 106 290 Z M 285 117 L 82 235 L 80 234 L 80 193 L 243 98 L 250 96 Z"/>
+      <path id="hF" fill-rule="evenodd" d="M 439 142 L 149 309 L 149 555 L 220 514 L 221 448 L 305 400 L 305 329 L 222 377 L 220 376 L 220 342 L 438 216 Z"/>
+      <linearGradient id="hfP" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#C9D1DD"/></linearGradient>
+      <linearGradient id="hfF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BCC4D1"/><stop offset="1" stop-color="#66748E"/></linearGradient>
+      <linearGradient id="hdP" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2D4E80"/><stop offset="1" stop-color="#0F2B53"/></linearGradient>
+      <linearGradient id="hdF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1F3D6B"/><stop offset="1" stop-color="#0B2245"/></linearGradient>
+      <radialGradient id="hgm" cx=".5" cy=".55" r=".5"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#fff" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+      <mask id="hgk"><rect x="-200" y="-120" width="840" height="880" fill="url(#hgm)"/></mask>
+      <radialGradient id="hsh" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#020A16" stop-opacity=".55"/><stop offset="1" stop-color="#020A16" stop-opacity="0"/></radialGradient>
     </defs>
-    <g class="blk" style="--i:0"><polygon fill="url(#gL)" points="0,790 112.6,855 112.6,215 0,150"/><polygon fill="url(#gR)" points="372.4,705 112.6,855 112.6,215 372.4,65"/><polygon fill="url(#gT)" points="259.8,0 372.4,65 112.6,215 0,150"/></g>
-    <g class="blk" style="--i:1"><polygon fill="url(#gL)" points="112.6,855 225.2,920 225.2,420 112.6,355"/><polygon fill="url(#gR)" points="485,770 225.2,920 225.2,420 485,270"/><polygon fill="url(#gT)" points="372.4,205 485,270 225.2,420 112.6,355"/></g>
-    <g class="blk" style="--i:2"><polygon fill="url(#gL)" points="225.2,920 337.7,985 337.7,625 225.2,560"/><polygon fill="url(#gR)" points="597.6,835 337.7,985 337.7,625 597.6,475"/><polygon fill="url(#gT)" points="485,410 597.6,475 337.7,625 225.2,560"/></g>
-    <g class="blk" style="--i:3"><polygon fill="url(#gL)" points="337.7,985 450.3,1050 450.3,830 337.7,765"/><polygon fill="url(#gR)" points="710.1,900 450.3,1050 450.3,830 710.1,680"/><polygon fill="url(#gT)" points="597.6,615 710.1,680 450.3,830 337.7,765"/></g>
+    <g class="hgrid" mask="url(#hgk)"><path d="M-200 -1515L640 -1030M-200 -1285L640 -1770M-200 -1467L640 -982M-200 -1237L640 -1722M-200 -1419L640 -934M-200 -1189L640 -1674M-200 -1371L640 -886M-200 -1141L640 -1626M-200 -1323L640 -838M-200 -1093L640 -1578M-200 -1275L640 -790M-200 -1045L640 -1530M-200 -1227L640 -742M-200 -997L640 -1482M-200 -1179L640 -694M-200 -949L640 -1434M-200 -1131L640 -646M-200 -901L640 -1386M-200 -1083L640 -598M-200 -853L640 -1338M-200 -1035L640 -550M-200 -805L640 -1290M-200 -987L640 -502M-200 -757L640 -1242M-200 -939L640 -454M-200 -709L640 -1194M-200 -891L640 -406M-200 -661L640 -1146M-200 -843L640 -358M-200 -613L640 -1098M-200 -795L640 -310M-200 -565L640 -1050M-200 -747L640 -262M-200 -517L640 -1002M-200 -699L640 -214M-200 -469L640 -954M-200 -651L640 -166M-200 -421L640 -906M-200 -603L640 -118M-200 -373L640 -858M-200 -555L640 -70M-200 -325L640 -810M-200 -507L640 -22M-200 -277L640 -762M-200 -459L640 26M-200 -229L640 -714M-200 -411L640 74M-200 -181L640 -666M-200 -363L640 122M-200 -133L640 -618M-200 -315L640 170M-200 -85L640 -570M-200 -267L640 218M-200 -37L640 -522M-200 -219L640 266M-200 11L640 -474M-200 -171L640 314M-200 59L640 -426M-200 -123L640 362M-200 107L640 -378M-200 -75L640 410M-200 155L640 -330M-200 -27L640 458M-200 203L640 -282M-200 21L640 506M-200 251L640 -234M-200 69L640 554M-200 299L640 -186M-200 117L640 602M-200 347L640 -138M-200 165L640 650M-200 395L640 -90M-200 213L640 698M-200 443L640 -42M-200 261L640 746M-200 491L640 6M-200 309L640 794M-200 539L640 54M-200 357L640 842M-200 587L640 102M-200 405L640 890M-200 635L640 150M-200 453L640 938M-200 683L640 198M-200 501L640 986M-200 731L640 246M-200 549L640 1034M-200 779L640 294M-200 597L640 1082M-200 827L640 342M-200 645L640 1130M-200 875L640 390M-200 693L640 1178M-200 923L640 438M-200 741L640 1226M-200 971L640 486M-200 789L640 1274M-200 1019L640 534M-200 837L640 1322M-200 1067L640 582M-200 885L640 1370M-200 1115L640 630M-200 933L640 1418M-200 1163L640 678M-200 981L640 1466M-200 1211L640 726M-200 1029L640 1514M-200 1259L640 774M-200 1077L640 1562M-200 1307L640 822M-200 1125L640 1610M-200 1355L640 870M-200 1173L640 1658M-200 1403L640 918M-200 1221L640 1706M-200 1451L640 966M-200 1269L640 1754M-200 1499L640 1014"/></g>
+    <ellipse class="hsh" cx="190" cy="640" rx="250" ry="70" fill="url(#hsh)"/>
+    <g class="hcota">
+      <path pathLength="1" d="M-62 152V336M-72 152h20M-72 336h20"/>
+      <path pathLength="1" d="M-62 152l6 10M-62 152l-6 10M-62 336l6-10M-62 336l-6-10"/>
+      <path pathLength="1" d="M479 166V578M469 166h20M469 578h20"/>
+      <path pathLength="1" d="M479 166l6 10M479 166l-6 10M479 578l6-10M479 578l-6-10"/>
+      <path pathLength="1" d="M226 -18 456 115M221 -9l10-17M451 124l10-17"/>
+    </g>
+    <g class="hmono">
+      <g class="dep dF" fill="url(#hdF)"><use href="#hF" style="--n:20"/><use href="#hF" style="--n:19"/><use href="#hF" style="--n:18"/><use href="#hF" style="--n:17"/><use href="#hF" style="--n:16"/><use href="#hF" style="--n:15"/><use href="#hF" style="--n:14"/><use href="#hF" style="--n:13"/><use href="#hF" style="--n:12"/><use href="#hF" style="--n:11"/><use href="#hF" style="--n:10"/><use href="#hF" style="--n:9"/><use href="#hF" style="--n:8"/><use href="#hF" style="--n:7"/><use href="#hF" style="--n:6"/><use href="#hF" style="--n:5"/><use href="#hF" style="--n:4"/><use href="#hF" style="--n:3"/><use href="#hF" style="--n:2"/><use href="#hF" style="--n:1"/></g>
+      <g class="dep dP" fill="url(#hdP)"><use href="#hP" style="--n:20"/><use href="#hP" style="--n:19"/><use href="#hP" style="--n:18"/><use href="#hP" style="--n:17"/><use href="#hP" style="--n:16"/><use href="#hP" style="--n:15"/><use href="#hP" style="--n:14"/><use href="#hP" style="--n:13"/><use href="#hP" style="--n:12"/><use href="#hP" style="--n:11"/><use href="#hP" style="--n:10"/><use href="#hP" style="--n:9"/><use href="#hP" style="--n:8"/><use href="#hP" style="--n:7"/><use href="#hP" style="--n:6"/><use href="#hP" style="--n:5"/><use href="#hP" style="--n:4"/><use href="#hP" style="--n:3"/><use href="#hP" style="--n:2"/><use href="#hP" style="--n:1"/></g>
+      <use class="fF" href="#hF" fill="url(#hfF)"/>
+      <use class="fP" href="#hP" fill="url(#hfP)"/>
+    </g>
   </svg>
   <div class="wrap hero-in">
     <div class="hero-text">
