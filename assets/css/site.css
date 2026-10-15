@@ -128,7 +128,7 @@ ul,ol{padding:0;list-style:none}
 }
 
 /* ============ HEADER ============ */
-.hdr{position:fixed;inset:0 0 auto;z-index:50;height:var(--hh);color:#fff;transition:background-color .45s var(--ease),color .45s var(--ease),box-shadow .45s var(--ease)}
+.hdr{position:sticky;top:0;z-index:50;height:var(--hh);margin-bottom:calc(var(--hh) * -1);color:#fff;transition:background-color .45s var(--ease),color .45s var(--ease),box-shadow .45s var(--ease)}
 .hdr .wrap{position:relative;height:100%;display:flex;align-items:center;justify-content:space-between;gap:24px}
 /* fio fino sob a marca enquanto o cabeçalho está sobre o azul */
 .hdr .wrap::after{content:"";position:absolute;left:var(--gut);right:var(--gut);bottom:0;height:1px;background:linear-gradient(90deg,rgba(221,226,234,.22),rgba(221,226,234,.06));transition:opacity .45s var(--ease)}
@@ -173,7 +173,7 @@ ul,ol{padding:0;list-style:none}
 .menu-open .burger .bl i:first-child{transform:rotate(45deg)}
 .menu-open .burger .bl i:last-child{transform:rotate(-45deg)}
 /* com o menu aberto, o cabeçalho assume a cor do menu */
-.menu-open .hdr{color:#fff;background:transparent;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+.menu-open .hdr{position:fixed;left:0;right:0;color:#fff;background:transparent;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
 .menu-open .hdr .wrap::after{opacity:1}
 .menu-open .hdr .prog{opacity:0}
 .menu-open.menu-light .hdr{color:var(--navy);background:#fff}
@@ -228,7 +228,7 @@ ul,ol{padding:0;list-style:none}
 @media (min-width:1100px){.mnav{display:none}}
 
 /* ============ 01 HERO ============ */
-.hero{position:relative;min-height:100vh;min-height:100svh;background:var(--navy);color:var(--on-navy);overflow:hidden;display:flex;flex-direction:column}
+.hero{position:relative;min-height:calc(100vh - var(--fh,0px));min-height:calc(100svh - var(--fh,0px));background:var(--navy);color:var(--on-navy);overflow:hidden;display:flex;flex-direction:column}
 .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 18% 30%,#0E2a52 0%,rgba(7,27,54,0) 62%),linear-gradient(180deg,rgba(7,27,54,0) 60%,rgba(4,16,33,.5));pointer-events:none}
 .hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(7,27,54,0) 30%,rgba(7,27,54,.88) 47%,#071B36 60%)}
 /* arte da abertura: o monograma PF em volume isométrico, sobre grade e cotas técnicas */
@@ -714,14 +714,14 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 .sis-head .h2{max-width:17em}
 .sis-head .lead{color:var(--on-navy);max-width:36em}
 .slider{position:relative;padding-block:8px 24px;-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 10%,#000 90%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0%,#000 10%,#000 90%,transparent 100%)}
-.slider-track{display:flex;width:max-content;animation:sl-loop 52s linear infinite}
+.slider-track{display:flex;width:max-content;animation:sl-loop 52s linear infinite;will-change:transform}
 @keyframes sl-loop{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
 .sl{position:relative;flex:none;width:208px;aspect-ratio:1;margin-right:16px;border-radius:12px;overflow:hidden;background:var(--navy-2);box-shadow:0 25px 50px -12px rgba(0,0,0,.5);transition:transform .3s ease,filter .3s ease;isolation:isolate}
 .sl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.72) contrast(1.04);transition:transform .6s var(--ease),filter .4s ease}
 .sl::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,27,54,.05) 30%,rgba(7,27,54,.55) 62%,rgba(7,27,54,.94) 100%),linear-gradient(0deg,rgba(58,78,112,.18),rgba(58,78,112,.18));z-index:1;pointer-events:none}
 .sl:hover{transform:scale(1.05);filter:brightness(1.1);z-index:2;box-shadow:0 30px 60px -14px rgba(0,0,0,.6),0 0 0 1px rgba(221,226,234,.28)}
 .sl:hover img{transform:scale(1.06);filter:saturate(1) contrast(1.06)}
-.sl-ic{position:absolute;top:14px;left:14px;z-index:2;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:rgba(7,27,54,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18)}
+.sl-ic{position:absolute;top:14px;left:14px;z-index:2;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:rgba(7,27,54,.72);border:1px solid rgba(255,255,255,.18)}
 .sl-ic .ic{width:24px;height:24px;color:#fff;stroke-width:1.6}
 .sl-tx{position:absolute;left:18px;right:18px;bottom:16px;z-index:2;display:grid;gap:4px}
 .sl .tn{font-family:var(--display);font-weight:300;font-size:20px;letter-spacing:-.02em;line-height:1.15;color:#fff}
@@ -739,7 +739,7 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 /* cartões do slider como links */
 .sl-li{flex:none}
 .sl{display:block}
-.sl-go{position:absolute;top:16px;left:16px;z-index:2;font-size:12px;font-weight:700;letter-spacing:.02em;color:#fff;padding:7px 11px;border-radius:999px;background:rgba(7,27,54,.6);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18);opacity:0;transform:translateY(-6px);transition:opacity .3s ease,transform .4s var(--ease)}
+.sl-go{position:absolute;top:16px;left:16px;z-index:2;font-size:12px;font-weight:700;letter-spacing:.02em;color:#fff;padding:7px 11px;border-radius:999px;background:rgba(7,27,54,.78);border:1px solid rgba(255,255,255,.18);opacity:0;transform:translateY(-6px);transition:opacity .3s ease,transform .4s var(--ease)}
 .sl:hover .sl-go,.sl:focus-visible .sl-go{opacity:1;transform:none}
 .sl:focus-visible{outline:2px solid #fff;outline-offset:3px}
 .sis-foot{margin-top:28px}
@@ -813,6 +813,14 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 .wa-go::before{content:"";width:8px;height:8px;border-radius:50%;background:#25D366}
 .wa-go:hover{background:var(--aco)}
 @media (min-width:768px){.wa{right:28px;bottom:28px}.wa-btn{width:62px;height:62px}}
+
+/* ============ FAIXA DE PRÉVIA (Sett) — remover quando o site virar oficial ============ */
+.sett-faixa{margin:0;max-width:none;padding:9px 16px;background:#0B0C0E;color:#B7BCC4;font:400 12.5px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-align:center;letter-spacing:.01em}
+.sett-faixa b{color:#FFFFFF;font-weight:600}
+.sett-faixa a{display:inline-block;vertical-align:middle;line-height:0;margin:0 .25em}
+.sett-faixa img{display:inline-block;height:1.1em;width:auto;max-width:none;margin-top:-.2em;border:0}
+.sett-faixa a:focus-visible{outline:2px solid #12F0F5;outline-offset:3px;border-radius:2px}
+@media (max-width:600px){.sett-faixa{font-size:11.5px;padding:8px 14px}.sett-faixa img{height:1.25em}}
 
 /* reduced motion */
 @media (prefers-reduced-motion:reduce){
