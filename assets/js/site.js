@@ -50,8 +50,8 @@
   if(reduce || html.classList.contains('no-intro') || !intro){ if(intro) intro.remove(); ready(.05); }
   else{
     void intro.offsetWidth; setTimeout(function(){ intro.classList.add('go'); }, 20);
-    setTimeout(function(){ intro.classList.add('out'); ready(.06); }, 600);
-    setTimeout(function(){ intro.remove(); }, 1150);
+    setTimeout(function(){ intro.classList.add('out'); ready(.06); }, 1500);
+    setTimeout(function(){ intro.remove(); }, 2400);
     try{sessionStorage.setItem('pf-intro','1')}catch(e){}
   }
 
@@ -104,7 +104,7 @@
     new IntersectionObserver(function(es){ es.forEach(function(e){ track.style.animationPlayState=e.isIntersecting?'running':'paused'; }); },{rootMargin:'100px 0px'}).observe(track);
   }
 
-  /* ---------- WhatsApp: balão após 3 s parado no topo ou ao começar a rolar; fica até ser fechado ---------- */
+  /* ---------- WhatsApp: balão após 4 s parado no topo ou ao começar a rolar; fica até ser fechado ---------- */
   var wa=d.getElementById('wa'), waPop=d.getElementById('wa-pop');
   (function(){
     if(!waPop) return;
@@ -123,13 +123,13 @@
       waPop.classList.remove('show'); waPop.setAttribute('aria-hidden','true');
       try{sessionStorage.setItem(KEY,'1')}catch(e){}
     }
-    function arm(){ clearTimeout(timer); timer=setTimeout(function(){ if((window.scrollY||0)<120) show(); else arm(); },3000); }
+    function arm(){ clearTimeout(timer); timer=setTimeout(function(){ if((window.scrollY||0)<120) show(); else arm(); },4000); }
     function onS(){ if(Math.abs((window.scrollY||0)-startY) > 60){ clearTimeout(timer); setTimeout(show,350); } }
     d.getElementById('wa-x').addEventListener('click',hide);
     waPop.querySelector('.wa-go').addEventListener('click',hide);
     d.addEventListener('keydown',function(e){ if(e.key==='Escape' && shown && !closed) hide(); });
     if(!closed){
-      setTimeout(function(){ startY=window.scrollY||0; window.addEventListener('scroll',onS,{passive:true}); if(startY<120) arm(); }, html.classList.contains('no-intro')?400:1300);
+      setTimeout(function(){ startY=window.scrollY||0; window.addEventListener('scroll',onS,{passive:true}); if(startY<120) arm(); }, html.classList.contains('no-intro')?400:2400);
     }
   })();
 

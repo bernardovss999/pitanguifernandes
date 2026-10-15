@@ -96,29 +96,29 @@ ul,ol{padding:0;list-style:none}
 .js .in .ic.draw,.js .ic.draw.in{stroke-dashoffset:0}
 
 /* ============ ABERTURA ============
-   0–.45s  monograma em traço → preenchido; marca sobe; descritor fecha o espaçamento
-   .42–.66 linha fina a 30° corta a tela (ângulo do monograma)
-   .62–1s  as duas lâminas marinho se afastam pelo corte e revelam o site */
+   0–.9s    monograma em traço → preenchido; marca sobe; descritor fecha o espaçamento
+   .8–1.45  linha fina a 30° corta a tela (ângulo do monograma)
+   1.5–2.3s as duas lâminas marinho se afastam pelo corte e revelam o site */
 .intro{position:fixed;inset:0;z-index:100;overflow:hidden}
 .no-intro .intro,html:not(.js) .intro{display:none}
-.intro .ip{position:absolute;inset:0;background:radial-gradient(120% 90% at 18% 30%,#0E2A52 0%,#071B36 62%);transition:transform .42s cubic-bezier(.76,0,.24,1)}
+.intro .ip{position:absolute;inset:0;background:radial-gradient(120% 90% at 18% 30%,#0E2A52 0%,#071B36 62%);transition:transform .84s cubic-bezier(.76,0,.24,1)}
 .intro .ip-a{clip-path:polygon(0 0,100% 0,100% calc(50% - 28.87vw + 1px),0 calc(50% + 28.87vw + 1px))}
 .intro .ip-b{clip-path:polygon(0 calc(50% + 28.87vw),100% calc(50% - 28.87vw),100% 100%,0 100%)}
 .intro.out .ip-a{transform:translate3d(-38vmax,-66vmax,0)}
 .intro.out .ip-b{transform:translate3d(38vmax,66vmax,0)}
-.intro .iline{position:absolute;left:50%;top:50%;width:160vmax;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(221,226,234,.75) 50%,rgba(255,255,255,0));transform:translate(-50%,-50%) rotate(-30deg) scaleX(0);transition:transform .32s cubic-bezier(.65,0,.35,1) .4s,opacity .2s ease}
+.intro .iline{position:absolute;left:50%;top:50%;width:160vmax;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(221,226,234,.75) 50%,rgba(255,255,255,0));transform:translate(-50%,-50%) rotate(-30deg) scaleX(0);transition:transform .64s cubic-bezier(.65,0,.35,1) .8s,opacity .4s ease}
 .intro.go .iline{transform:translate(-50%,-50%) rotate(-30deg) scaleX(1)}
-.intro.out .iline{opacity:0;transition:opacity .15s ease}
-.intro-in{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:14px;transition:opacity .2s ease .36s,transform .45s var(--ease) .3s}
+.intro.out .iline{opacity:0;transition:opacity .3s ease}
+.intro-in{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:14px;transition:opacity .4s ease .72s,transform .9s var(--ease) .6s}
 .intro.go .intro-in{opacity:0;transform:scale(.985)}
 .intro .imono{width:46px;height:auto;overflow:visible;flex:none}
-.intro .imono path{stroke:#fff;stroke-width:1.3;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:1;fill:#fff;fill-opacity:0;transition:stroke-dashoffset .34s cubic-bezier(.65,0,.35,1),fill-opacity .2s ease .2s,stroke-opacity .2s ease .24s}
-.intro .imono .m2{fill:var(--cinza);transition-delay:.04s,.24s,.28s}
+.intro .imono path{stroke:#fff;stroke-width:1.3;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:1;fill:#fff;fill-opacity:0;transition:stroke-dashoffset .68s cubic-bezier(.65,0,.35,1),fill-opacity .4s ease .4s,stroke-opacity .4s ease .48s}
+.intro .imono .m2{fill:var(--cinza);transition-delay:.08s,.48s,.56s}
 .intro.go .imono path{stroke-dashoffset:0;fill-opacity:1;stroke-opacity:0}
 .intro .ilock{display:flex;flex-direction:column;gap:6px;width:172px;color:#fff;clip-path:inset(-20% -40% -40% 0)}
-.intro .ilock .wordmark{width:100%;transform:translateY(110%);transition:transform .38s var(--ease) .1s}
+.intro .ilock .wordmark{width:100%;transform:translateY(110%);transition:transform .76s var(--ease) .2s}
 .intro.go .ilock .wordmark{transform:none}
-.intro .tagline{font-size:6.65px;opacity:0;letter-spacing:1.1em;transition:opacity .25s ease .16s,letter-spacing .45s var(--ease) .12s}
+.intro .tagline{font-size:6.65px;opacity:0;letter-spacing:1.1em;transition:opacity .5s ease .32s,letter-spacing .9s var(--ease) .24s}
 .intro.go .tagline{opacity:.78;letter-spacing:.505em}
 @media (min-width:768px){
   .intro-in{gap:18px}
