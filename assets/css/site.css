@@ -724,6 +724,33 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
   .esc-gh{position:sticky;top:calc(var(--hh) + 32px)}
 }
 
+/* ============ WHATSAPP (botão fixo + balão) ============ */
+.wa{position:fixed;right:calc(18px + env(safe-area-inset-right));bottom:calc(18px + env(safe-area-inset-bottom));z-index:45;display:flex;flex-direction:column;align-items:flex-end;gap:14px;pointer-events:none}
+.wa-btn{pointer-events:auto;width:60px;height:60px;border-radius:50%;background:#25D366;display:grid;place-items:center;box-shadow:0 10px 26px -8px rgba(7,27,54,.45),0 2px 6px rgba(7,27,54,.18);transition:transform .45s var(--ease),box-shadow .45s var(--ease);animation:wa-in .6s var(--ease) 1.2s both}
+.wa-btn svg{display:block;width:32px;height:32px}
+.wa-btn:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 16px 32px -10px rgba(7,27,54,.5),0 2px 6px rgba(7,27,54,.18)}
+.wa-btn:focus-visible{outline:2px solid var(--navy);outline-offset:4px}
+@keyframes wa-in{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+.no-intro .wa-btn{animation-delay:.4s}
+.menu-open .wa{opacity:0;visibility:hidden}
+.wa-pop{pointer-events:none;position:relative;width:min(300px,calc(100vw - 36px));background:#fff;color:var(--ink);border-radius:14px 14px 4px 14px;padding:18px 18px 16px;box-shadow:0 22px 50px -16px rgba(7,27,54,.42),0 2px 8px rgba(7,27,54,.1);opacity:0;transform:translateY(14px) scale(.96);transform-origin:bottom right;transition:opacity .35s var(--ease),transform .55s var(--ease),visibility 0s .55s;visibility:hidden}
+.wa-pop.show{pointer-events:auto;opacity:1;transform:none;visibility:visible;transition:opacity .35s var(--ease),transform .55s var(--ease)}
+.wa-pop::after{content:"";position:absolute;right:22px;bottom:-7px;width:14px;height:14px;background:#fff;transform:rotate(45deg);border-radius:2px}
+.wa-who{display:flex;align-items:center;gap:10px;padding-right:28px}
+.wa-av{width:36px;height:36px;border-radius:50%;background:var(--navy);display:grid;place-items:center;flex:none;position:relative}
+.wa-av svg{width:15px}
+.wa-av::after{content:"";position:absolute;right:0;bottom:0;width:10px;height:10px;border-radius:50%;background:#25D366;border:2px solid #fff}
+.wa-who b{display:block;font-size:14px;font-weight:800;color:var(--navy);line-height:1.2}
+.wa-who small{display:block;font-size:12px;color:var(--muted)}
+.wa-t{margin-top:14px;font-family:var(--display);font-weight:400;font-size:17px;line-height:1.3;letter-spacing:-.01em;color:var(--navy)}
+.wa-s{margin-top:4px;font-size:14px;line-height:1.45;color:var(--muted)}
+.wa-go{margin-top:14px;display:flex;align-items:center;justify-content:center;height:44px;border-radius:8px;background:#25D366;color:#fff;font-weight:800;font-size:14px;letter-spacing:.01em;transition:background .3s}
+.wa-go:hover{background:#1EBE5A}
+.wa-x{position:absolute;top:10px;right:10px;width:32px;height:32px;border:0;background:none;border-radius:50%;display:grid;place-items:center;color:var(--muted);cursor:pointer;transition:background .3s,color .3s}
+.wa-x svg{width:16px}
+.wa-x:hover{background:var(--nevoa);color:var(--navy)}
+@media (min-width:768px){.wa{right:28px;bottom:28px}.wa-btn{width:62px;height:62px}}
+
 /* reduced motion */
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -736,7 +763,6 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
   .js [data-r="line"]{transform:none!important}
   .js .plan .lvl i.on{transform:skewY(-30deg)!important}
   .intro{display:none}
-  .js .wa-btn{opacity:1!important;transform:none!important}
   .js .mdraw path{stroke-dashoffset:0!important;fill-opacity:.05!important;stroke-opacity:.16!important}
   .js .phero-art .plane,.js .phero-art::after,.js .iso .col,.js .iso .lbl{opacity:1!important;transform:none!important}
   .js .phero-art [data-img]{clip-path:polygon(0 0,100% 0,100% 100%,120px 100%,0 calc(100% - 69.3px))!important}
