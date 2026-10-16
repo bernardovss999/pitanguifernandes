@@ -427,7 +427,7 @@ ul,ol{padding:0;list-style:none}
 
 /* ============ 06 O NOME ============ */
 .nome{overflow:hidden}
-.nome .mdraw{right:-22vw;bottom:-26vw;width:min(90vw,820px)}
+.nome .mdraw{display:none}
 .nome .grid{row-gap:48px;align-items:center}
 .nome .fig{grid-column:1/-1}
 .nome .txt{grid-column:1/-1}
@@ -488,7 +488,7 @@ ul,ol{padding:0;list-style:none}
 
 /* ============ 09 CONVERSAR ============ */
 .talk{overflow:hidden}
-.talk .mdraw{left:-12vw;top:-8vw;width:min(80vw,760px)}
+.talk .mdraw{display:none}
 .talk .grid{row-gap:48px;position:relative}
 .talk .txt{grid-column:1/-1}
 .talk .h2{margin-top:20px;max-width:10em}
@@ -558,7 +558,7 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 
 /* ============ MULTIPÁGINA ============ */
 /* abertura das páginas internas */
-.phero{position:relative;overflow:hidden;background:var(--navy);color:var(--on-navy);padding:calc(var(--hh) + clamp(64px,11vw,136px)) 0 clamp(56px,8vw,104px)}
+.phero{position:relative;overflow:hidden;background:var(--navy);color:var(--on-navy);padding:calc(var(--hh) + clamp(48px,7vw,96px)) 0 clamp(56px,8vw,104px)}
 .phero::before{content:"";position:absolute;inset:0;background:radial-gradient(110% 120% at 12% 0%,#0E2A52 0%,rgba(7,27,54,0) 60%);pointer-events:none}
 .phero .mdraw{right:-8vw;bottom:-38%;width:min(70vw,640px)}
 .phero .wrap{position:relative}
@@ -670,6 +670,7 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 /* ============ CAMADA CRIATIVA ============ */
 /* monograma que se desenha (contorno e depois preenchimento a 5%) */
 .mdraw{position:absolute;pointer-events:none;overflow:visible}
+.phero-solo .mdraw{-webkit-mask-image:linear-gradient(0deg,#000 40%,transparent 78%);mask-image:linear-gradient(0deg,#000 40%,transparent 78%)}
 .mdraw path{fill:#fff;fill-opacity:.05;stroke:#fff;stroke-opacity:.16;stroke-width:1.2;vector-effect:non-scaling-stroke}
 .js .mdraw path{fill-opacity:0;stroke-opacity:.5;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 2.6s var(--ease-io) calc(var(--h0,0s) + .2s),fill-opacity 1.4s ease calc(var(--h0,0s) + 1.9s),stroke-opacity 1.4s ease calc(var(--h0,0s) + 2.1s)}
 .js .ready .mdraw path{stroke-dashoffset:0;fill-opacity:.05;stroke-opacity:.16}
@@ -682,7 +683,7 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 .js .phero-art [data-img].in,.phero-art .ph{clip-path:polygon(0 0,100% 0,100% 100%,120px 100%,0 calc(100% - 69.3px))}
 .js .phero-art [data-img]{clip-path:polygon(0 100%,100% 100%,100% 100%,120px 100%,0 100%)}
 .js .phero-art [data-img].in{clip-path:polygon(0 0,100% 0,100% 100%,120px 100%,0 calc(100% - 69.3px))}
-.phero-art .plane,.phero-art::after{position:absolute;right:-24px;bottom:-1px;aspect-ratio:300/173;clip-path:polygon(100% 0,100% 100%,0 100%);pointer-events:none}
+.phero-art .plane,.phero-art::after{position:absolute;right:0;bottom:-1px;aspect-ratio:300/173;clip-path:polygon(100% 0,100% 100%,0 100%);pointer-events:none}
 .phero-art .plane{width:58%;background:linear-gradient(115deg,#3A4E70 0%,#132E57 55%,#0A2142 100%)}
 .phero-art::after{content:"";width:72%;background:rgba(221,226,234,.16)}
 .phero-art::after{z-index:0}.phero-art .plane{z-index:1}
@@ -699,13 +700,12 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 .ready .iso .lbl{opacity:1}
 .phero-solo .phero-txt{max-width:900px}
 .phero-solo .mdraw{right:-4vw;bottom:-46%;width:min(76vw,700px)}
-.phero:not(.phero-solo) .mdraw{left:-18vw;right:auto;bottom:-52%;width:min(80vw,640px)}
+.phero:not(.phero-solo) .mdraw{display:none}
 @media (min-width:1024px){
   .phero{padding-bottom:clamp(64px,7vw,96px)}
-  .phero-grid{grid-template-columns:minmax(0,7fr) minmax(0,4fr);gap:clamp(48px,6vw,104px);align-items:end}
+  .phero-grid{grid-template-columns:minmax(0,7fr) minmax(0,4fr);gap:clamp(48px,6vw,104px);align-items:center}
   .phero-art{justify-self:end;width:100%}
   .phero-art .ph{aspect-ratio:4/5}
-  .phero-art .plane,.phero-art::after{right:-40px}
 }
 
 /* sistemas da casa: slider contínuo de imagens */
