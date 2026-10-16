@@ -428,7 +428,7 @@ ul,ol{padding:0;list-style:none}
 /* ============ 06 O NOME ============ */
 .nome{overflow:hidden}
 .nome .mdraw{display:none}
-.nome .grid{row-gap:48px;align-items:center}
+.nome .grid{row-gap:48px;align-items:start}
 .nome .fig{grid-column:1/-1}
 .nome .txt{grid-column:1/-1}
 .nome .h2{margin-top:20px;max-width:13em}
@@ -558,7 +558,7 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 
 /* ============ MULTIPÁGINA ============ */
 /* abertura das páginas internas */
-.phero{position:relative;overflow:hidden;background:var(--navy);color:var(--on-navy);padding:calc(var(--hh) + clamp(48px,7vw,96px)) 0 clamp(56px,8vw,104px)}
+.phero{position:relative;overflow:hidden;background:var(--navy);color:var(--on-navy);padding:calc(var(--hh) + clamp(32px,3.5vw,56px)) 0 clamp(56px,8vw,104px)}
 .phero::before{content:"";position:absolute;inset:0;background:radial-gradient(110% 120% at 12% 0%,#0E2A52 0%,rgba(7,27,54,0) 60%);pointer-events:none}
 .phero .mdraw{right:-8vw;bottom:-38%;width:min(70vw,640px)}
 .phero .wrap{position:relative}
@@ -568,7 +568,7 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 .phero .rule{display:block;height:1px;margin-top:clamp(48px,6vw,72px);background:var(--line-dark);transform-origin:left}
 .js .phero .rule{transform:scaleX(0);transition:transform 1.2s var(--ease);transition-delay:calc(var(--h0,0s) + .35s)}
 .ready .phero .rule{transform:none}
-.page-first{padding-top:calc(var(--hh) + clamp(64px,10vw,120px))}
+.page-first{padding-top:calc(var(--hh) + clamp(32px,3.5vw,56px))}
 
 /* próximo capítulo */
 .next{display:block;background:var(--white);border-top:1px solid var(--line);position:relative;overflow:hidden;isolation:isolate}
@@ -703,7 +703,7 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 .phero:not(.phero-solo) .mdraw{display:none}
 @media (min-width:1024px){
   .phero{padding-bottom:clamp(64px,7vw,96px)}
-  .phero-grid{grid-template-columns:minmax(0,7fr) minmax(0,4fr);gap:clamp(48px,6vw,104px);align-items:center}
+  .phero-grid{grid-template-columns:minmax(0,7fr) minmax(0,4fr);gap:clamp(48px,6vw,104px);align-items:start}
   .phero-art{justify-self:end;width:100%}
   .phero-art .ph{aspect-ratio:4/5}
 }
