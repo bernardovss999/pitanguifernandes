@@ -23,7 +23,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,500&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/site.css">
 <script>document.documentElement.classList.add('js');try{var n=performance.getEntriesByType('navigation')[0],v=+sessionStorage.getItem('pf-nav');sessionStorage.removeItem('pf-nav');if(n&&n.type!=='reload'&&v&&Date.now()-v<15000)document.documentElement.classList.add('no-intro')}catch(e){}</script>
 </head>
@@ -143,44 +143,56 @@
       <p class="body muted" data-r>Cada casa pede um nível de presença diferente. Os planos variam em frequência, profundidade e proximidade, e todos partem do diagnóstico.</p>
     </div>
     <div class="plans" data-stagger="120">
-      <article class="plan" id="essencial" data-r>
-        <div class="tier"><span class="eyebrow tnum">Plano 1</span><span class="lvl" role="img" aria-label="Nível de presença 1 de 3"><i class="on"></i><i></i><i></i></span></div>
-        <h2 class="pn">Essencial</h2>
-        <p class="sint">Organização e controle</p>
-        <p class="perfil">Para quem quer a casa em ordem e um responsável técnico por trás dela.</p>
-        <ul class="list">
+      <article class="plan p1" id="essencial" data-r>
+        <div class="plan-h">
+          <div class="tier"><span class="eyebrow tnum">Plano 1</span><span class="lvl" role="img" aria-label="Nível de presença 1 de 3"><i class="on"></i><i></i><i></i></span></div>
+          <h2 class="pn">Essencial</h2>
+          <p class="sint">Organização e controle</p>
+        </div>
+        <div class="plan-b">
+          <p class="perfil">Para quem quer a casa em ordem e um responsável técnico por trás dela.</p>
+          <ul class="list">
           <li><i class="dia"></i>Uma visita por mês</li>
           <li><i class="dia"></i>Plano de manutenção preventiva anual</li>
           <li><i class="dia"></i>Rede de prestadores homologados</li>
           <li><i class="dia"></i>Acompanhamento remoto de reparos</li>
           <li><i class="dia"></i>Relatório mensal resumido</li>
-        </ul>
+          </ul>
+        </div>
       </article>
-      <article class="plan" id="premium" data-r>
-        <div class="tier"><span class="eyebrow tnum">Plano 2</span><span class="lvl" role="img" aria-label="Nível de presença 2 de 3"><i class="on"></i><i class="on"></i><i></i></span></div>
-        <h2 class="pn">Premium</h2>
-        <p class="sint">Gestão ativa</p>
-        <p class="perfil">Para casas maiores, rotinas intensas e segundas residências.</p>
-        <ul class="list">
+      <article class="plan p2" id="premium" data-r>
+        <div class="plan-h">
+          <div class="tier"><span class="eyebrow tnum">Plano 2</span><span class="lvl" role="img" aria-label="Nível de presença 2 de 3"><i class="on"></i><i class="on"></i><i></i></span></div>
+          <h2 class="pn">Premium</h2>
+          <p class="sint">Gestão ativa</p>
+        </div>
+        <div class="plan-b">
+          <p class="perfil">Para casas maiores, rotinas intensas e segundas residências.</p>
+          <ul class="list">
           <li><i class="dia"></i>Duas visitas por mês</li>
           <li><i class="dia"></i>Piscina, jardim, automação e segurança eletrônica</li>
           <li><i class="dia"></i>Supervisão presencial de reparos e obras</li>
           <li><i class="dia"></i>Controle de custos por categoria</li>
           <li><i class="dia"></i>Atendimento prioritário</li>
-        </ul>
+          </ul>
+        </div>
       </article>
-      <article class="plan" id="concierge" data-r>
-        <div class="tier"><span class="eyebrow tnum">Plano 3</span><span class="lvl" role="img" aria-label="Nível de presença 3 de 3"><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
-        <h2 class="pn">Concierge</h2>
-        <p class="sint">Gestão completa</p>
-        <p class="perfil">Para propriedades complexas e proprietários que passam temporadas fora.</p>
-        <ul class="list">
+      <article class="plan p3" id="concierge" data-r>
+        <div class="plan-h">
+          <div class="tier"><span class="eyebrow tnum">Plano 3</span><span class="lvl" role="img" aria-label="Nível de presença 3 de 3"><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+          <h2 class="pn">Concierge</h2>
+          <p class="sint">Gestão completa</p>
+        </div>
+        <div class="plan-b">
+          <p class="perfil">Para propriedades complexas e proprietários que passam temporadas fora.</p>
+          <ul class="list">
           <li><i class="dia"></i>Visitas semanais</li>
           <li><i class="dia"></i>Orçamento anual de investimentos e previsão</li>
           <li><i class="dia"></i>Supervisão semanal de obras</li>
           <li><i class="dia"></i>Canal de atendimento dedicado</li>
           <li><i class="dia"></i>Reuniões trimestrais com o proprietário</li>
-        </ul>
+          </ul>
+        </div>
       </article>
     </div>
     <div class="acc" id="comparativo" data-r>
@@ -281,8 +293,8 @@
   <div class="wrap">
     <div class="foot-g">
       <div class="b">
-        <a class="brand" href="index.html" aria-label="Pitangui Fernandes, página inicial">
-          <svg viewBox="18 18 423 539" aria-hidden="true"><use href="#mP" fill="#fff"/><use href="#mF" fill="#A2A8B4"/></svg>
+        <a class="brand" href="index.html" aria-label="Pitangui Fernandes, página inicial" data-r="logo">
+          <svg viewBox="18 18 423 539" aria-hidden="true"><use href="#mP" class="mono"/><use href="#mF" class="mF"/></svg>
           <span class="lock" aria-hidden="true"><span class="wordmark"></span><span class="tagline">Governança residencial</span></span>
        </a>
         <p>Pitangui Fernandes | Governança Residencial. Empresa de família. Niterói, RJ.</p>

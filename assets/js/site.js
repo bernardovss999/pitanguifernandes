@@ -60,7 +60,10 @@
         var p=M.wide ? (vh*.8 - r.top)/(vh*.45) : (vh*.8 - r.top)/r.height;
         p=Math.max(0,Math.min(1,p));
         if(s.fill) s.fill.style.transform=M.wide?'scaleX('+p+')':'scaleY('+p+')';
-        for(var i=0;i<s.items.length;i++) s.items[i].classList.toggle('on', p>0.001 && p >= (M.wide ? i/3.2 : s.tops[i]/r.height));
+        var last=-1;
+        for(var i=0;i<s.items.length;i++){ var on=p>0.001 && p >= (M.wide ? i/3.2 : s.tops[i]/r.height); s.items[i].classList.toggle('on', on); if(on) last=i; }
+        /* o passo atual leva o losango em pitanga */
+        for(var j=0;j<s.items.length;j++) s.items[j].classList.toggle('cur', j===last);
       });
     });
   }
