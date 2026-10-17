@@ -31,7 +31,7 @@
   }
 
   /* ---------- cabeçalho: transparente na abertura, branco com linha fina depois de rolar ---------- */
-  var hdr=d.getElementById('hdr'), hero=d.querySelector('.ent'), prog=hdr.querySelector('.prog'), faixa=d.querySelector('.sett-faixa');
+  var hdr=d.getElementById('hdr'), hero=d.querySelector('.ent'), prog=hdr.querySelector('.prog'), faixa=d.querySelector('.sett-faixa'), hart=d.querySelector('.hart');
   var themeMeta=d.querySelector('meta[name="theme-color"]'), theme='';
   var steps=[].map.call(d.querySelectorAll('.steps'),function(s){ return {el:s, items:s.querySelectorAll('.step'), fill:s.querySelector('.fill'), tops:[]}; });
   var ticking=false, M={};
@@ -54,6 +54,9 @@
       hdr.classList.toggle('glass', darkTop && !solid && y > 8);
       setTheme(solid || !darkTop ? '#ffffff' : '#071B36');
       if(prog) prog.style.transform='scaleX('+(M.max>0?Math.min(1,y/M.max):0)+')';
+      /* a arte da abertura desce um pouco mais devagar que o texto */
+      if(hart && !reduce && y < M.heroEnd) hart.style.setProperty('--py',(y*.06).toFixed(1)+'px');
+      if(spy) spy(y,vh);
       /* linha do tempo: o passo atual na rolagem ganha o numeral em marinho */
       steps.forEach(function(s,k){
         var r=rects[k]; if(r.bottom<-vh || r.top>vh*2) return;
@@ -117,6 +120,82 @@
   /* ao voltar pelo botão "voltar" (cache do navegador), a página não pode reaparecer com o menu aberto */
   window.addEventListener('pageshow',function(e){ if(e.persisted && body.classList.contains('menu-open')) setMenu(false); });
   window.addEventListener('resize',function(){ if(window.innerWidth>=1024 && body.classList.contains('menu-open')) setMenu(false); });
+
+  /* ---------- página inicial: o link do capítulo em vista fica sublinhado ---------- */
+  var spy=(function(){
+    var map={'governanca':'governanca.html','como-trabalhamos':'metodo.html','planos':'planos.html','o-nome':'familia.html','samuel-e-diana':'familia.html','compromissos':'compromissos.html'};
+    var links={}; hdr.querySelectorAll('.nav a').forEach(function(a){ links[a.getAttribute('href')]=a; });
+    var secs=Object.keys(map).map(function(id){ return d.getElementById(id); }).filter(Boolean);
+    if(secs.length<3) return null;
+    var cur=null;
+    return function(y,vh){
+      var id=null, line=y+vh*.4;
+      for(var i=0;i<secs.length;i++){ if(secs[i].offsetTop<=line) id=secs[i].id; }
+      var last=secs[secs.length-1]; if(id && last.offsetTop+last.offsetHeight<=y) id=null;
+      var href=id?map[id]:null; if(href===cur) return; cur=href;
+      Object.keys(links).forEach(function(h){ links[h].classList.toggle('on', h===href); });
+    };
+  })();
+
+  /* ---------- sistemas da casa: desenho, pontos, lista e filtro por plano ---------- */
+  (function(){
+    var sis=d.querySelector('.sis'); if(!sis) return;
+    var house=sis.querySelector('.house'), groups={}, hots={}, items={};
+    house.querySelectorAll('[data-sys]').forEach(function(g){ var k=g.getAttribute('data-sys'); (groups[k]=groups[k]||[]).push(g); });
+    sis.querySelectorAll('.hs li').forEach(function(li){ hots[li.querySelector('button').getAttribute('data-hs')]=li; });
+    sis.querySelectorAll('.sis-list li').forEach(function(li){ items[li.getAttribute('data-sys')]=li; });
+    var SUB={'':{todos:'Em todos os planos',premium:'Premium e Concierge',periodica:'Semestral ou trimestral'},
+             essencial:{todos:'Incluído',premium:'Não incluído',periodica:'Não incluído'},
+             premium:{todos:'Incluído',premium:'Incluído',periodica:'Semestral'},
+             concierge:{todos:'Incluído',premium:'Incluído',periodica:'Trimestral'}};
+    var picked=null, held=false, canHover=matchMedia('(hover:hover)').matches;
+    function pick(id,keep){
+      picked=id; held=!!keep;
+      Object.keys(groups).forEach(function(k){
+        var on=k===id;
+        groups[k].forEach(function(g){ g.classList.toggle('on',on); }); if(hots[k]) hots[k].classList.toggle('on',on); if(items[k]) items[k].classList.toggle('on',on);
+      });
+      house.classList.toggle('pick',!!id);
+    }
+    function plan(p){
+      sis.querySelectorAll('.segp button').forEach(function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-plan')===p); });
+      Object.keys(items).forEach(function(k){
+        var g=items[k].getAttribute('data-g'), off=(p==='essencial' && g!=='todos');
+        items[k].classList.toggle('off',off); (groups[k]||[]).forEach(function(g){ g.classList.toggle('off',off); }); if(hots[k]) hots[k].classList.toggle('off',off);
+        var sm=items[k].querySelector('small'); if(sm) sm.textContent=SUB[p][g];
+      });
+    }
+    sis.querySelectorAll('.segp button').forEach(function(b){ b.addEventListener('click',function(){ plan(b.getAttribute('data-plan')); }); });
+    Object.keys(items).forEach(function(k){
+      var li=items[k], a=li.querySelector('a');
+      if(canHover){
+        li.addEventListener('mouseenter',function(){ if(!held) pick(k); });
+        li.addEventListener('mouseleave',function(){ if(picked===k && !held) pick(null); });
+      }
+      a.addEventListener('focus',function(){ pick(k); });
+      a.addEventListener('blur',function(){ if(picked===k && !held) pick(null); });
+    });
+    Object.keys(hots).forEach(function(k){
+      var b=hots[k].querySelector('button');
+      if(canHover){
+        b.addEventListener('mouseenter',function(){ if(!held) pick(k); });
+        b.addEventListener('mouseleave',function(){ if(picked===k && !held) pick(null); });
+      }
+      b.addEventListener('focus',function(){ pick(k); });
+      b.addEventListener('blur',function(){ if(picked===k && !held) pick(null); });
+      b.addEventListener('click',function(){
+        /* no toque: o sistema fica apontado até um toque fora do bloco */
+        pick(picked===k && held ? null : k, true);
+        if(!picked) return;
+        var li=items[k]; if(!li) return;
+        var row=d.getElementById('sis-'+k);
+        if(row && row.closest('.esc')){ row.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'}); return; }
+        li.scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest',inline:'center'});
+      });
+    });
+    /* toque fora dos pontos limpa o destaque */
+    d.addEventListener('click',function(e){ if(picked && !e.target.closest('.sis')) pick(null); });
+  })();
 
   /* ---------- comparativo dos planos (sanfona) ---------- */
   (function(){
