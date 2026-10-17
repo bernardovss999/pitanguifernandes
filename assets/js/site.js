@@ -1,54 +1,28 @@
 (function(){
   var d=document, html=d.documentElement, body=d.body;
   var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var darkTop=body.classList.contains('top-dark');
 
-  /* ---------- split words (mask reveal) ---------- */
-  function splitEl(el){
-    var i=0;
-    (function walk(node){
-      Array.prototype.slice.call(node.childNodes).forEach(function(n){
-        if(n.nodeType===3){
-          var parts=n.textContent.split(/(\s+)/), frag=d.createDocumentFragment();
-          parts.forEach(function(p){
-            if(!p) return;
-            if(/^\s+$/.test(p)){frag.appendChild(d.createTextNode(' '));return;}
-            var w=d.createElement('span');w.className='w';
-            var s=d.createElement('span');s.textContent=p;s.style.setProperty('--i',i++);
-            w.appendChild(s);frag.appendChild(w);
-          });
-          node.replaceChild(frag,n);
-        } else if(n.nodeType===1 && !n.matches('.n, .hint, svg')){ walk(n); }
-      });
-    })(el);
-  }
-  d.querySelectorAll('.split').forEach(splitEl);
-
-  /* ---------- stagger groups ---------- */
+  /* ---------- sequências: frases, passos e compromissos entram um a um ---------- */
   d.querySelectorAll('[data-stagger]').forEach(function(g){
-    var step=parseInt(g.getAttribute('data-stagger')||'110',10);
-    var kids=g.querySelectorAll(':scope > [data-r]');
-    kids.forEach(function(k,i){k.style.setProperty('--d',(i*step/1000)+'s');});
+    var step=parseInt(g.getAttribute('data-stagger')||'120',10);
+    g.querySelectorAll(':scope > [data-r]').forEach(function(k,i){ k.style.setProperty('--d',(i*step/1000)+'s'); });
   });
 
-  /* ---------- reveal on scroll ---------- */
-  var targets=d.querySelectorAll('[data-r], main .split:not(.ent .split), [data-img], .fecho');
+  /* ---------- entrada do conteúdo ao rolar: fade + 12 px ---------- */
+  var targets=d.querySelectorAll('[data-r]');
   if('IntersectionObserver' in window && !reduce){
     var io=new IntersectionObserver(function(es){
-      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); (e.target._rv||[]).forEach(function(x){x.classList.add('in')}); io.unobserve(e.target);} });
-    },{rootMargin:'0px 0px -9% 0px',threshold:.12});
-    targets.forEach(function(t){
-      if(t.closest('.ent')) return;
-      /* elementos recortados (clip-path) não são vistos pelo observador: observa o pai */
-      if(t.hasAttribute('data-img')){ var w=t.parentNode; w._rv=(w._rv||[]).concat(t); io.observe(w); }
-      else io.observe(t);
-    });
-  } else { targets.forEach(function(t){t.classList.add('in');}); }
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    },{rootMargin:'0px 0px -8% 0px',threshold:.08});
+    targets.forEach(function(t){ io.observe(t); });
+  } else { targets.forEach(function(t){ t.classList.add('in'); }); }
 
-  /* ---------- intro + hero entrance ---------- */
-  /* a abertura toca ao chegar no site e a cada recarregamento; entre páginas do próprio site, não */
+  /* ---------- abertura animada + entrada da página ---------- */
+  /* toca ao chegar no site e a cada recarregamento; entre páginas do próprio site, não */
   window.addEventListener('pagehide',function(){ try{sessionStorage.setItem('pf-nav',Date.now())}catch(e){} });
   var intro=d.getElementById('intro');
-  function ready(delay){ html.style.setProperty('--h0',(delay||0)+'s'); body.classList.add('ready'); d.querySelectorAll('.ent .split, .ent [data-img]').forEach(function(s){s.classList.add('in')}); }
+  function ready(delay){ html.style.setProperty('--h0',(delay||0)+'s'); body.classList.add('ready'); }
   if(reduce || html.classList.contains('no-intro') || !intro){ if(intro) intro.remove(); ready(.05); }
   else{
     void intro.offsetWidth; setTimeout(function(){ intro.classList.add('go'); }, 20);
@@ -56,39 +30,44 @@
     setTimeout(function(){ intro.remove(); }, 2400);
   }
 
-  /* ---------- header state + progresso de leitura ---------- */
-  var hdr=d.getElementById('hdr'), hero=d.querySelector('.ent'), prog=hdr.querySelector('.prog'), faixa=d.querySelector('.sett-faixa');
+  /* ---------- cabeçalho: transparente na abertura, branco com linha fina depois de rolar ---------- */
+  var hdr=d.getElementById('hdr'), hero=d.querySelector('.ent'), prog=hdr.querySelector('.prog'), faixa=d.querySelector('.sett-faixa'), hart=d.querySelector('.hart');
   var themeMeta=d.querySelector('meta[name="theme-color"]'), theme='';
-  var steps=d.getElementById('steps'), stepEls=steps?steps.querySelectorAll('.step'):[], fill=steps?steps.querySelector('.fill'):null;
+  var steps=[].map.call(d.querySelectorAll('.steps'),function(s){ return {el:s, items:s.querySelectorAll('.step'), fill:s.querySelector('.fill'), tops:[]}; });
   var ticking=false, M={};
   function setTheme(c){ if(themeMeta && c!==theme){ theme=c; themeMeta.setAttribute('content',c); } }
-  /* medidas de layout ficam em cache e só são refeitas quando a página muda de tamanho */
   function measure(){
-    var fh=faixa?faixa.offsetHeight:0;
-    html.style.setProperty('--fh',fh+'px');
+    html.style.setProperty('--fh',(faixa?faixa.offsetHeight:0)+'px');
     M.vh=window.innerHeight; M.wide=window.innerWidth>=1024;
     M.heroEnd=hero?hero.offsetTop+hero.offsetHeight:0;
     M.max=html.scrollHeight-M.vh;
-    if(steps){ M.stepTops=[].map.call(stepEls,function(s){return s.offsetTop+8;}); }
+    steps.forEach(function(s){ s.tops=[].map.call(s.items,function(it){ return it.offsetTop+8; }); });
   }
   function onScroll(){
     if(ticking || body.classList.contains('menu-open')) return; ticking=true;
     requestAnimationFrame(function(){
       ticking=false;
-      /* leituras primeiro, escritas depois: nenhum recálculo forçado de layout durante a rolagem */
       var y=window.scrollY||0, vh=M.vh;
-      var solid=!hero || y > Math.max(40, M.heroEnd - 90);
-      var r=steps?steps.getBoundingClientRect():null;
+      var solid=darkTop ? y > Math.max(40, M.heroEnd - 90) : y > 8;
+      var rects=steps.map(function(s){ return s.el.getBoundingClientRect(); });
       hdr.classList.toggle('solid', solid);
-      hdr.classList.toggle('glass', !solid && y > 8);
-      setTheme(solid?'#ffffff':'#071B36');
+      hdr.classList.toggle('glass', darkTop && !solid && y > 8);
+      setTheme(solid || !darkTop ? '#ffffff' : '#071B36');
       if(prog) prog.style.transform='scaleX('+(M.max>0?Math.min(1,y/M.max):0)+')';
-      if(r){
-        var p=M.wide ? (vh*.82 - r.top)/(vh*.45) : (vh*.82 - r.top)/r.height;
+      /* a arte da abertura desce um pouco mais devagar que o texto */
+      if(hart && !reduce && y < M.heroEnd) hart.style.setProperty('--py',(y*.06).toFixed(1)+'px');
+      if(spy) spy(y,vh);
+      /* linha do tempo: o passo atual na rolagem ganha o numeral em marinho */
+      steps.forEach(function(s,k){
+        var r=rects[k]; if(r.bottom<-vh || r.top>vh*2) return;
+        var p=M.wide ? (vh*.8 - r.top)/(vh*.45) : (vh*.8 - r.top)/r.height;
         p=Math.max(0,Math.min(1,p));
-        fill.style.transform=M.wide?'scaleX('+p+')':'scaleY('+p+')';
-        for(var i=0;i<stepEls.length;i++) stepEls[i].classList.toggle('on', p>0.001 && p >= (M.wide ? i/3.2 : M.stepTops[i]/r.height));
-      }
+        if(s.fill) s.fill.style.transform=M.wide?'scaleX('+p+')':'scaleY('+p+')';
+        var last=-1;
+        for(var i=0;i<s.items.length;i++){ var on=p>0.001 && p >= (M.wide ? i/3.2 : s.tops[i]/r.height); s.items[i].classList.toggle('on', on); if(on) last=i; }
+        /* o passo atual leva o losango em pitanga */
+        for(var j=0;j<s.items.length;j++) s.items[j].classList.toggle('cur', j===last);
+      });
     });
   }
   var rT; function onResize(){ clearTimeout(rT); rT=setTimeout(function(){ measure(); onScroll(); },120); }
@@ -99,43 +78,8 @@
   if('ResizeObserver' in window) new ResizeObserver(onResize).observe(body);
   onScroll();
 
-  /* carrossel: só anima quando está na tela (economiza bateria e processamento) */
-  var track=d.querySelector('.slider-track');
-  if(track && 'IntersectionObserver' in window){
-    new IntersectionObserver(function(es){ es.forEach(function(e){ track.style.animationPlayState=e.isIntersecting?'running':'paused'; }); },{rootMargin:'100px 0px'}).observe(track);
-  }
-
-  /* ---------- WhatsApp: balão após 4 s parado no topo ou ao começar a rolar; fica até ser fechado ---------- */
-  var wa=d.getElementById('wa'), waPop=d.getElementById('wa-pop');
-  (function(){
-    if(!waPop) return;
-    var KEY='pf-wa-x', shown=false, closed=false, timer=null, startY=window.scrollY||0;
-    try{ if(sessionStorage.getItem(KEY)) closed=true; }catch(e){}
-    if(d.getElementById('form')) closed=true; /* na página de contato o WhatsApp já está à vista */
-    function show(){
-      if(shown || closed) return;
-      if(body.classList.contains('menu-open')){ arm(); return; }
-      shown=true; clearTimeout(timer);
-      waPop.classList.add('show'); waPop.setAttribute('aria-hidden','false'); wa.classList.add('on');
-      window.removeEventListener('scroll',onS);
-    }
-    function hide(){
-      closed=true; clearTimeout(timer);
-      waPop.classList.remove('show'); waPop.setAttribute('aria-hidden','true');
-      try{sessionStorage.setItem(KEY,'1')}catch(e){}
-    }
-    function arm(){ clearTimeout(timer); timer=setTimeout(function(){ if((window.scrollY||0)<120) show(); else arm(); },4000); }
-    function onS(){ if(Math.abs((window.scrollY||0)-startY) > 60){ clearTimeout(timer); setTimeout(show,350); } }
-    d.getElementById('wa-x').addEventListener('click',hide);
-    waPop.querySelector('.wa-go').addEventListener('click',hide);
-    d.addEventListener('keydown',function(e){ if(e.key==='Escape' && shown && !closed) hide(); });
-    if(!closed){
-      setTimeout(function(){ startY=window.scrollY||0; window.addEventListener('scroll',onS,{passive:true}); if(startY<120) arm(); }, html.classList.contains('no-intro')?400:2400);
-    }
-  })();
-
-  /* ---------- menu mobile ---------- */
-  var burger=d.getElementById('burger'), mnav=d.getElementById('mnav'), lockY=0, leaveT=null;
+  /* ---------- menu do celular ---------- */
+  var burger=d.getElementById('burger'), mnav=d.getElementById('mnav'), lockY=0;
   function lockScroll(on){
     /* iOS ignora overflow:hidden no body; fixar o body é o único bloqueio confiável */
     if(on){
@@ -148,12 +92,9 @@
   }
   function setMenu(open){
     if(open===body.classList.contains('menu-open')) return;
-    clearTimeout(leaveT);
     if(open){
-      var light=hdr.classList.contains('solid');
+      var light=hdr.classList.contains('solid') || !darkTop;
       mnav.classList.toggle('light',light); body.classList.toggle('menu-light',light);
-      mnav.classList.remove('leaving');
-      mnav.querySelectorAll('.picked').forEach(function(li){ li.classList.remove('picked'); });
       lockScroll(true);
       body.classList.add('menu-open');
       mnav.scrollTop=0;
@@ -166,138 +107,139 @@
     burger.setAttribute('aria-label',open?'Fechar menu':'Abrir menu');
     mnav.setAttribute('aria-hidden',!open);
     if(open) mnav.removeAttribute('inert'); else mnav.setAttribute('inert','');
-    setTheme(open ? (body.classList.contains('menu-light')?'#ffffff':'#071B36') : (hdr.classList.contains('solid')?'#ffffff':'#071B36'));
+    setTheme(open ? (body.classList.contains('menu-light')?'#ffffff':'#071B36') : (hdr.classList.contains('solid') || !darkTop ?'#ffffff':'#071B36'));
   }
   burger.addEventListener('click',function(){ setMenu(!body.classList.contains('menu-open')); });
   mnav.querySelectorAll('a').forEach(function(a){
     a.addEventListener('click',function(e){
-      if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||e.button) return;
-      if(a.target==='_blank'){ setMenu(false); return; }
-      if(a.getAttribute('aria-current')==='page'){ e.preventDefault(); setMenu(false); return; }
-      var li=a.closest('li');
-      if(reduce || !li) return;
-      /* a opção escolhida avança, as demais recuam; só então a página muda */
-      e.preventDefault();
-      li.classList.add('picked'); mnav.classList.add('leaving');
-      var href=a.href; leaveT=setTimeout(function(){ location.href=href; },380);
+      if(a.getAttribute('aria-current')==='page'){ e.preventDefault(); }
+      setMenu(false);
     });
   });
   d.addEventListener('keydown',function(e){ if(e.key==='Escape' && body.classList.contains('menu-open')){ setMenu(false); burger.focus(); } });
   /* ao voltar pelo botão "voltar" (cache do navegador), a página não pode reaparecer com o menu aberto */
-  window.addEventListener('pageshow',function(e){ if(e.persisted && body.classList.contains('menu-open')) setMenu(false); mnav.classList.remove('leaving'); });
-  window.addEventListener('resize',function(){ if(window.innerWidth>=1100 && body.classList.contains('menu-open')) setMenu(false); });
+  window.addEventListener('pageshow',function(e){ if(e.persisted && body.classList.contains('menu-open')) setMenu(false); });
+  window.addEventListener('resize',function(){ if(window.innerWidth>=1024 && body.classList.contains('menu-open')) setMenu(false); });
 
-  /* ---------- comparativo (matriz sem valores e sem taxas) ---------- */
-  if(d.getElementById('matrix')) (function(){
-  var Y='<i class="yes" aria-hidden="true"></i><span class="sr">Incluído</span>', N='<i class="no" aria-hidden="true"></i><span class="sr">Não incluído</span>';
-  var M=[
-    ['A','Inspeção e manutenção preventiva',[
-      ['Plano de manutenção preventiva anual',Y+'Incluído',Y+'Incluído',Y+'Com orçamento anual de investimentos'],
-      ['Checklist: elétrica, hidráulica, ar-condicionado, bombas e gás',Y+'Incluído',Y+'Incluído',Y+'Incluído'],
-      ['Piscina, jardim, automação e segurança eletrônica',N,Y+'Incluído',Y+'Incluído'],
-      ['Cobertura, caixa d’água, esquadrias e áreas externas',N,'Semestral','Trimestral'],
-      ['Teste de equipamentos críticos','Trimestral','Mensal','Em toda visita'],
-      ['Inventário de equipamentos','Principais ativos','Completo, com etiqueta/QR','Completo, com vida útil e plano de reposição'],
-      ['Controle de pragas','Lembrete','Agendamento e conferência','Agendamento e conferência'],
-      ['Vistoria pré e pós viagem ou temporal',N,'Uma por trimestre','Sob demanda, em horário comercial']
-    ]],
-    ['B','Gestão de fornecedores',[
-      ['#Seleção e contratação'],
-      ['Rede de prestadores homologados',Y+'Incluído',Y+'Incluído',Y+'Prioritária'],
-      ['Critérios de homologação (documentos, referências, seguro)','Básicos','Completos','Completos, com reavaliação semestral'],
-      ['Cotações comparativas','2 orçamentos','3 orçamentos','3 orçamentos e negociação'],
-      ['Análise técnica das propostas (escopo, materiais, prazo)','Resumo','Comparativo','Comparativo e recomendação fundamentada'],
-      ['Ordens de serviço e contratos','Ordem de serviço','OS e contratos recorrentes','OS, contratos e renegociação anual'],
-      ['#Acompanhamento e controle'],
-      ['Acompanhamento da execução','Remoto, com fotos','Presencial nos serviços relevantes','Presencial e conferência final'],
-      ['Conferência de qualidade e aceite','Checklist básico',Y+'Incluído',Y+'Com termo de aceite'],
-      ['Controle de garantias','Registro','Registro e alertas de prazo','Registro, alertas e acionamento'],
-      ['Documentação dos prestadores (seguro, ASO, NRs)',N,'Básica','Completa'],
-      ['Avaliação de desempenho (prazo, qualidade, retrabalho)',N,'Semestral','Trimestral']
-    ]],
-    ['C','Supervisão de obras e reparos',[
-      ['#Reparos corretivos'],
-      ['Diagnóstico da causa e definição de escopo',Y+'Incluído',Y+'Incluído',Y+'Incluído'],
-      ['Acionamento e coordenação do prestador',Y+'Incluído',Y+'Incluído',Y+'Incluído'],
-      ['Acompanhamento da execução','Remoto, com fotos e relato','Presencial nos casos relevantes','Presencial'],
-      ['Conferência de entrega e registro no histórico',Y+'Incluído',Y+'Incluído',Y+'Incluído'],
-      ['Análise de causa raiz em falhas recorrentes',N,Y+'Incluído',Y+'Incluído'],
-      ['#Obras e reformas'],
-      ['Levantamento de escopo e memorial descritivo','Simples',Y+'Incluído',Y+'Incluído'],
-      ['Compatibilização com arquiteto e projetistas',N,Y+'Incluído',Y+'Incluído'],
-      ['Cotação e comparativo de propostas','3 propostas','3 propostas e análise','3 propostas, análise e negociação'],
-      ['Cronograma e plano de obra','Marcos principais','Cronograma detalhado','Detalhado, com controle semanal'],
-      ['Visitas de supervisão','Início, meio e fim','Quinzenais','Semanais'],
-      ['Registro fotográfico e relatório da obra','Fotos nos marcos','Relatório quinzenal','Diário de obra semanal'],
-      ['Controle de medições e pagamentos conforme avanço',N,Y+'Incluído',Y+'Incluído'],
-      ['Gestão de mudanças de escopo (aditivos)',Y+'Incluído',Y+'Incluído',Y+'Incluído'],
-      ['Vistoria final e lista de pendências',Y+'Incluído',Y+'Incluído',Y+'Com acompanhamento pós-obra de 90 dias'],
-      ['Entrega de documentação (notas, manuais, garantias, as built)','Arquivo básico',Y+'Incluído',Y+'Completa']
-    ]],
-    ['D','Governança e relatórios',[
-      ['Relatório mensal','Resumido','Completo','Completo, com comentário do gestor'],
-      ['Histórico de serviços e ativos','Planilha','Plataforma','Plataforma com acesso do proprietário'],
-      ['Controle de custos',N,'Por categoria','Por categoria, com orçamento anual e previsão'],
-      ['Indicadores','Chamados abertos e fechados','Preventiva × corretiva e custo por sistema','Também disponibilidade de sistemas críticos'],
-      ['Painel de obras e contratos',N,Y+'Incluído',Y+'Incluído'],
-      ['Reunião com o proprietário',N,'Semestral','Trimestral']
-    ]],
-    ['E','Atendimento',[
-      ['Canal','WhatsApp comercial','WhatsApp prioritário','Canal dedicado'],
-      ['Abertura e acompanhamento de chamados',Y+'Incluído',Y+'Incluído',Y+'Incluído'],
-      ['Prioridade no acionamento da rede',N,Y+'Incluído',Y+'Prioritária'],
-      ['Protocolo de emergência da casa (registros, quadros, gás, contatos)',Y+'Incluído',Y+'Incluído',Y+'Incluído'],
-      ['Guarda de chaves e acessos',N,'Cadastro de acessos','Guarda segura e protocolo']
-    ]]
-  ];
-  var P=['Essencial','Premium','Concierge'];
-  var h='<div class="mx-head" aria-hidden="true"><span>Serviço</span><span>Essencial</span><span>Premium</span><span>Concierge</span></div>';
-  M.forEach(function(g){
-    h+='<div class="mx-group" role="table" aria-label="'+g[1]+'"><h4><b>'+g[0]+'</b>'+g[1]+'</h4>';
-    g[2].forEach(function(r){
-      if(r.length===1){ h+='<p class="mx-sub">'+r[0].slice(1)+'</p>'; return; }
-      h+='<div class="mx-row" role="row"><span class="s" role="rowheader">'+r[0]+'</span>';
-      for(var k=1;k<4;k++) h+='<span class="c" role="cell" data-p="'+P[k-1]+'"><span class="sr">'+P[k-1]+': </span>'+r[k]+'</span>';
-      h+='</div>';
-    });
-    h+='</div>';
-  });
-  var mx=d.getElementById('matrix'); mx.innerHTML=h;
-  var acc=d.getElementById('comparativo'), accBtn=d.getElementById('acc-btn');
-  accBtn.addEventListener('click',function(){
-    var open=!acc.classList.contains('open');
-    acc.classList.toggle('open',open); accBtn.setAttribute('aria-expanded',open);
-    if(open) mx.removeAttribute('inert'); else mx.setAttribute('inert','');
-    if(!open){ var t=acc.getBoundingClientRect().top; if(t<0) window.scrollBy({top:t-100,behavior:reduce?'auto':'smooth'}); }
-  });
-  if(location.hash==='#comparativo') accBtn.click();
-
+  /* ---------- página inicial: o link do capítulo em vista fica sublinhado ---------- */
+  var spy=(function(){
+    var map={'governanca':'governanca.html','como-trabalhamos':'metodo.html','planos':'planos.html','o-nome':'familia.html','samuel-e-diana':'familia.html','compromissos':'compromissos.html'};
+    var links={}; hdr.querySelectorAll('.nav a').forEach(function(a){ links[a.getAttribute('href')]=a; });
+    var secs=Object.keys(map).map(function(id){ return d.getElementById(id); }).filter(Boolean);
+    if(secs.length<3) return null;
+    var cur=null;
+    return function(y,vh){
+      var id=null, line=y+vh*.4;
+      for(var i=0;i<secs.length;i++){ if(secs[i].offsetTop<=line) id=secs[i].id; }
+      var last=secs[secs.length-1]; if(id && last.offsetTop+last.offsetHeight<=y) id=null;
+      var href=id?map[id]:null; if(href===cur) return; cur=href;
+      Object.keys(links).forEach(function(h){ links[h].classList.toggle('on', h===href); });
+    };
   })();
 
-  /* ---------- form ---------- */
+  /* ---------- sistemas da casa: desenho, pontos, lista e filtro por plano ---------- */
+  (function(){
+    var sis=d.querySelector('.sis'); if(!sis) return;
+    var house=sis.querySelector('.house'), groups={}, hots={}, items={};
+    house.querySelectorAll('[data-sys]').forEach(function(g){ var k=g.getAttribute('data-sys'); (groups[k]=groups[k]||[]).push(g); });
+    sis.querySelectorAll('.hs li').forEach(function(li){ hots[li.querySelector('button').getAttribute('data-hs')]=li; });
+    sis.querySelectorAll('.sis-list li').forEach(function(li){ items[li.getAttribute('data-sys')]=li; });
+    var SUB={'':{todos:'Em todos os planos',premium:'Premium e Concierge',periodica:'Semestral ou trimestral'},
+             essencial:{todos:'Incluído',premium:'Não incluído',periodica:'Não incluído'},
+             premium:{todos:'Incluído',premium:'Incluído',periodica:'Semestral'},
+             concierge:{todos:'Incluído',premium:'Incluído',periodica:'Trimestral'}};
+    var picked=null, held=false, canHover=matchMedia('(hover:hover)').matches;
+    function pick(id,keep){
+      picked=id; held=!!keep;
+      Object.keys(groups).forEach(function(k){
+        var on=k===id;
+        groups[k].forEach(function(g){ g.classList.toggle('on',on); }); if(hots[k]) hots[k].classList.toggle('on',on); if(items[k]) items[k].classList.toggle('on',on);
+      });
+      house.classList.toggle('pick',!!id);
+    }
+    function plan(p){
+      sis.querySelectorAll('.segp button').forEach(function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-plan')===p); });
+      Object.keys(items).forEach(function(k){
+        var g=items[k].getAttribute('data-g'), off=(p==='essencial' && g!=='todos');
+        items[k].classList.toggle('off',off); (groups[k]||[]).forEach(function(g){ g.classList.toggle('off',off); }); if(hots[k]) hots[k].classList.toggle('off',off);
+        var sm=items[k].querySelector('small'); if(sm) sm.textContent=SUB[p][g];
+      });
+    }
+    sis.querySelectorAll('.segp button').forEach(function(b){ b.addEventListener('click',function(){ plan(b.getAttribute('data-plan')); }); });
+    Object.keys(items).forEach(function(k){
+      var li=items[k], a=li.querySelector('a');
+      if(canHover){
+        li.addEventListener('mouseenter',function(){ if(!held) pick(k); });
+        li.addEventListener('mouseleave',function(){ if(picked===k && !held) pick(null); });
+      }
+      a.addEventListener('focus',function(){ pick(k); });
+      a.addEventListener('blur',function(){ if(picked===k && !held) pick(null); });
+    });
+    Object.keys(hots).forEach(function(k){
+      var b=hots[k].querySelector('button');
+      if(canHover){
+        b.addEventListener('mouseenter',function(){ if(!held) pick(k); });
+        b.addEventListener('mouseleave',function(){ if(picked===k && !held) pick(null); });
+      }
+      b.addEventListener('focus',function(){ pick(k); });
+      b.addEventListener('blur',function(){ if(picked===k && !held) pick(null); });
+      b.addEventListener('click',function(){
+        /* no toque: o sistema fica apontado até um toque fora do bloco */
+        pick(picked===k && held ? null : k, true);
+        if(!picked) return;
+        var li=items[k]; if(!li) return;
+        var row=d.getElementById('sis-'+k);
+        if(row && row.closest('.esc')){ row.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'}); return; }
+        li.scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest',inline:'center'});
+      });
+    });
+    /* toque fora dos pontos limpa o destaque */
+    d.addEventListener('click',function(e){ if(picked && !e.target.closest('.sis')) pick(null); });
+  })();
+
+  /* ---------- comparativo dos planos (sanfona) ---------- */
+  (function(){
+    var acc=d.getElementById('comparativo'), btn=d.getElementById('acc-btn'), mx=d.getElementById('matrix');
+    if(!acc || !btn) return;
+    btn.addEventListener('click',function(){
+      var open=!acc.classList.contains('open');
+      acc.classList.toggle('open',open); btn.setAttribute('aria-expanded',open);
+      if(open) mx.removeAttribute('inert'); else mx.setAttribute('inert','');
+      if(!open){ var t=acc.getBoundingClientRect().top; if(t<0) window.scrollBy({top:t-100,behavior:reduce?'auto':'smooth'}); }
+    });
+    if(location.hash==='#comparativo') btn.click();
+  })();
+
+  /* ---------- formulário: validação gentil; o pedido segue pelo WhatsApp ---------- */
   if(d.getElementById('form')) (function(){
-  var form=d.getElementById('form'), tel=d.getElementById('tel'), done=d.getElementById('done');
-  tel.addEventListener('input',function(){
-    var v=tel.value.replace(/\D/g,'').slice(0,11), o=v;
-    if(v.length>2) o='('+v.slice(0,2)+') '+v.slice(2);
-    if(v.length>6) o='('+v.slice(0,2)+') '+v.slice(2, v.length>10?7:6)+'-'+v.slice(v.length>10?7:6);
-    tel.value=o; clearErr('f-tel');
-  });
-  d.getElementById('nome').addEventListener('input',function(){clearErr('f-nome')});
-  function setErr(id,m){var f=d.getElementById(id);f.classList.add('err');f.querySelector('.msg').textContent=m;f.querySelector('input').setAttribute('aria-invalid','true');}
-  function clearErr(id){var f=d.getElementById(id);f.classList.remove('err');f.querySelector('.msg').textContent='';f.querySelector('input').removeAttribute('aria-invalid');}
-  form.addEventListener('submit',function(e){
-    e.preventDefault();
-    var nome=form.nome.value.trim(), t=tel.value.replace(/\D/g,''), ok=true, first=null;
-    if(nome.length<2){setErr('f-nome','Como podemos chamar você?');ok=false;first=first||form.nome;}
-    if(t.length<10){setErr('f-tel','Confira o número, com DDD.');ok=false;first=first||tel;}
-    if(!ok){first.focus();return;}
-    var tipo=(form.querySelector('input[name=tipo]:checked')||{}).value||'';
-    var txt='Olá, aqui é '+nome+'. Gostaria de conversar sobre a gestão da minha casa.\n\nTipo de imóvel: '+tipo+(form.bairro.value.trim()?'\nBairro: '+form.bairro.value.trim():'')+'\nTelefone: '+tel.value+(form.msg.value.trim()?'\n\n'+form.msg.value.trim():'');
-    window.open('https://wa.me/5521967072931?text='+encodeURIComponent(txt),'_blank','noopener');
-    done.classList.add('show'); done.querySelector('.ic').classList.add('in');
-    done.querySelector('#again').focus();
-  });
-  d.getElementById('again').addEventListener('click',function(){ form.reset(); done.classList.remove('show'); form.nome.focus(); });
+    var form=d.getElementById('form'), tel=d.getElementById('tel'), done=d.getElementById('done'), again=d.getElementById('wa-again');
+    try{
+      var plano=new URLSearchParams(location.search).get('plano');
+      if(plano && /^(Essencial|Premium|Concierge)$/.test(plano)) form.msg.value='Tenho interesse no plano '+plano+'.';
+    }catch(e){}
+    tel.addEventListener('input',function(){
+      var v=tel.value.replace(/\D/g,'').slice(0,11), o=v;
+      if(v.length>2) o='('+v.slice(0,2)+') '+v.slice(2);
+      if(v.length>6) o='('+v.slice(0,2)+') '+v.slice(2, v.length>10?7:6)+'-'+v.slice(v.length>10?7:6);
+      tel.value=o; clearErr('f-tel');
+    });
+    d.getElementById('nome').addEventListener('input',function(){clearErr('f-nome')});
+    function setErr(id,m){var f=d.getElementById(id);f.classList.add('err');f.querySelector('.msg').textContent=m;f.querySelector('input').setAttribute('aria-invalid','true');}
+    function clearErr(id){var f=d.getElementById(id);f.classList.remove('err');f.querySelector('.msg').textContent='';f.querySelector('input').removeAttribute('aria-invalid');}
+    form.addEventListener('submit',function(e){
+      e.preventDefault();
+      var nome=form.nome.value.trim(), t=tel.value.replace(/\D/g,''), ok=true, first=null;
+      if(nome.length<2){setErr('f-nome','Como podemos chamar você?');ok=false;first=first||form.nome;}
+      if(t.length<10){setErr('f-tel','Confira o número, com DDD.');ok=false;first=first||tel;}
+      if(!ok){first.focus();return;}
+      var tipo=(form.querySelector('input[name=tipo]:checked')||{}).value||'';
+      var txt='Olá, aqui é '+nome+'. Gostaria de conversar sobre a gestão da minha casa.\n\nTipo de imóvel: '+tipo+(form.bairro.value.trim()?'\nBairro: '+form.bairro.value.trim():'')+'\nTelefone: '+tel.value+(form.msg.value.trim()?'\n\n'+form.msg.value.trim():'');
+      var url='https://wa.me/5521967072931?text='+encodeURIComponent(txt);
+      if(again) again.href=url;
+      window.open(url,'_blank','noopener');
+      done.classList.add('show');
+      d.getElementById('again').focus();
+    });
+    d.getElementById('again').addEventListener('click',function(){ form.reset(); done.classList.remove('show'); form.nome.focus(); });
   })();
 })();
