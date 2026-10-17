@@ -6,7 +6,8 @@
   /* ---------- sequências: frases, passos e compromissos entram um a um ---------- */
   d.querySelectorAll('[data-stagger]').forEach(function(g){
     var step=parseInt(g.getAttribute('data-stagger')||'120',10);
-    g.querySelectorAll(':scope > [data-r]').forEach(function(k,i){ k.style.setProperty('--d',(i*step/1000)+'s'); });
+    var from=parseFloat(g.getAttribute('data-stagger-from')||'0');
+    g.querySelectorAll(':scope > [data-r]').forEach(function(k,i){ k.style.setProperty('--d',(from+i*step/1000)+'s'); });
   });
 
   /* ---------- entrada do conteúdo ao rolar: fade + 12 px ---------- */
@@ -26,8 +27,10 @@
   if(reduce || html.classList.contains('no-intro') || !intro){ if(intro) intro.remove(); ready(.05); }
   else{
     void intro.offsetWidth; setTimeout(function(){ intro.classList.add('go'); }, 20);
-    setTimeout(function(){ intro.classList.add('out'); ready(.06); }, 1500);
-    setTimeout(function(){ intro.remove(); }, 2400);
+    setTimeout(function(){ intro.classList.add('out'); ready(.06); }, 1250);
+    var gone=false; function bye(){ if(!gone){ gone=true; intro.remove(); } }
+    intro.querySelector('.ip-b').addEventListener('transitionend',bye);
+    setTimeout(bye, 2200);
   }
 
   /* ---------- cabeçalho: transparente na abertura, branco com linha fina depois de rolar ---------- */
@@ -50,13 +53,13 @@
       var y=window.scrollY||0, vh=M.vh;
       var solid=darkTop ? y > Math.max(40, M.heroEnd - 90) : y > 8;
       var rects=steps.map(function(s){ return s.el.getBoundingClientRect(); });
+      if(spy) spy(y,vh);
       hdr.classList.toggle('solid', solid);
       hdr.classList.toggle('glass', darkTop && !solid && y > 8);
       setTheme(solid || !darkTop ? '#ffffff' : '#071B36');
       if(prog) prog.style.transform='scaleX('+(M.max>0?Math.min(1,y/M.max):0)+')';
       /* a arte da abertura desce um pouco mais devagar que o texto */
       if(hart && !reduce && y < M.heroEnd) hart.style.setProperty('--py',(y*.06).toFixed(1)+'px');
-      if(spy) spy(y,vh);
       /* linha do tempo: o passo atual na rolagem ganha o numeral em marinho */
       steps.forEach(function(s,k){
         var r=rects[k]; if(r.bottom<-vh || r.top>vh*2) return;
@@ -123,7 +126,7 @@
 
   /* ---------- página inicial: o link do capítulo em vista fica sublinhado ---------- */
   var spy=(function(){
-    var map={'governanca':'governanca.html','como-trabalhamos':'metodo.html','planos':'planos.html','o-nome':'familia.html','samuel-e-diana':'familia.html','compromissos':'compromissos.html'};
+    var map={'governanca':'governanca.html','como-trabalhamos':'metodo.html','planos':'planos.html','o-nome':'familia.html','samuel-e-diana':'familia.html','compromissos':'compromissos.html','conversar':''};
     var links={}; hdr.querySelectorAll('.nav a').forEach(function(a){ links[a.getAttribute('href')]=a; });
     var secs=Object.keys(map).map(function(id){ return d.getElementById(id); }).filter(Boolean);
     if(secs.length<3) return null;
@@ -195,6 +198,13 @@
     });
     /* toque fora dos pontos limpa o destaque */
     d.addEventListener('click',function(e){ if(picked && !e.target.closest('.sis')) pick(null); });
+  })();
+
+  /* ---------- WhatsApp: some quando a seção Conversar está na tela (lá já há o formulário) ---------- */
+  (function(){
+    var wa=d.querySelector('.wa'), conv=d.getElementById('conversar');
+    if(!wa || !conv || !('IntersectionObserver' in window)) return;
+    new IntersectionObserver(function(es){ wa.classList.toggle('hide', es[0].isIntersecting); },{rootMargin:'0px 0px -30% 0px',threshold:0}).observe(conv);
   })();
 
   /* ---------- comparativo dos planos (sanfona) ---------- */
