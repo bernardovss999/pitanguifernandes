@@ -192,6 +192,7 @@ button.tlink{background:none;border:0;cursor:pointer;padding-inline:0}
 .intro.go .ilock .wordmark{transform:none}
 .intro .tagline{opacity:0;letter-spacing:1.1em;transition:opacity .5s ease .65s,letter-spacing .9s var(--ease) .65s}
 .intro.go .tagline{opacity:.78;letter-spacing:.52em}
+@media (max-width:47.9375em){.intro.go .tagline{letter-spacing:.26em}.intro .tagline{margin-right:-.26em}}
 @media (min-width:48em){.intro-in{gap:1.125rem}.intro .imono{width:3.875rem}.intro .ilock{width:14.75rem;gap:.5rem}}
 
 /* ============ 7 CABEÇALHO E MENU ============ */
@@ -247,7 +248,9 @@ button.tlink{background:none;border:0;cursor:pointer;padding-inline:0}
   .brand .lock{width:15rem}
   .brand svg{width:1.875rem}
 }
-@media (max-width:22.4375em){.brand .lock{width:9.375rem}.burger .bt{display:none}}
+/* a tagline precisa caber na largura do logotipo: com o lock estreito, o espaçamento entre letras diminui */
+@media (max-width:63.9375em){.hdr .tagline{letter-spacing:.3em;margin-right:-.3em}}
+@media (max-width:22.4375em){.brand .lock{width:9.375rem}.burger .bt{display:none}.hdr .tagline{font-size:.5rem;letter-spacing:.22em;margin-right:-.22em}}
 
 /* menu do celular */
 .mnav{--mbg:var(--navy);--mfg:#fff;--mmut:var(--on-navy-2);--mline:var(--line-dark);position:fixed;inset:0;z-index:49;height:100vh;height:100dvh;background:var(--mbg);color:var(--mfg);display:flex;flex-direction:column;padding:calc(var(--hh) + 1.25rem) var(--gut) calc(1.5rem + env(safe-area-inset-bottom));overflow-y:auto;overscroll-behavior:contain;opacity:0;visibility:hidden;transition:opacity .3s var(--ease),visibility 0s .3s}
@@ -681,6 +684,7 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 .foot .b .brand{color:#fff}
 .foot .b .brand svg{width:2rem}
 .foot .b .lock{width:13.75rem;gap:.4375rem}
+.foot .b .tagline{letter-spacing:.46em;margin-right:-.46em}
 .foot .b p{margin-top:1.25rem;max-width:22em}
 .foot .fh{margin-bottom:.75rem;font:500 .6875rem/1.3 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:#fff}
 .foot li a{display:inline-flex;align-items:center;min-height:3rem;transition:color .2s;overflow-wrap:anywhere}
