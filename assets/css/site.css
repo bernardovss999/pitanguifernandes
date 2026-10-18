@@ -406,6 +406,7 @@ button.tlink{background:none;border:0;cursor:pointer;padding-inline:0}
 .plan .price .pv{display:inline-flex;align-items:baseline;gap:.3125rem;color:var(--navy);white-space:nowrap}
 .plan .price .pv b{font-family:var(--serif);font-weight:600;font-size:2.25rem;line-height:1;letter-spacing:-.01em;font-feature-settings:"lnum","tnum"}
 .plan .price .pv small{font:500 .8125rem/1 var(--sans);color:var(--muted)}
+.plan .plan-cta{margin-top:1.25rem;align-self:flex-start;font-size:.9375rem}
 .plans-foot{margin-top:2.5rem;display:grid;gap:1.5rem}
 .plans-foot .note{max-width:46em;font-size:.875rem}
 @media (min-width:56.25em){
@@ -548,6 +549,11 @@ button.tlink{background:none;border:0;cursor:pointer;padding-inline:0}
 .talk .txt{display:flex;flex-direction:column}
 .talk .h2,.talk .h1p{margin-top:1.25rem;max-width:10em}
 .talk .body{margin-top:1.5rem;color:var(--on-navy)}
+/* o que acontece depois do contato: três passos, sem prometer prazo */
+.after{margin-top:1.75rem}
+.after li{display:grid;grid-template-columns:1.5rem minmax(0,1fr);gap:.75rem;padding:.75rem 0;border-top:1px solid var(--line-dark);font-size:.9375rem;line-height:1.5;color:var(--on-navy)}
+.after li:last-child{border-bottom:0}
+.after .n{font-family:var(--serif);font-weight:600;font-size:1.125rem;line-height:1.25;color:var(--cinza);font-feature-settings:"lnum"}
 .direct{margin-top:auto;padding-top:2.5rem;border-top:1px solid var(--line-dark)}
 .direct a{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:3.75rem;padding:.875rem 0;border-bottom:1px solid var(--line-dark)}
 .direct small{display:block;font:500 .6875rem/1.4 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--cinza)}
@@ -587,11 +593,15 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 .form .btn{width:100%;margin-top:1.75rem}
 .form .micro{margin-top:1rem;font-size:.8125rem;line-height:1.54;color:var(--muted)}
 .form .micro a,.done-alt a{text-decoration:underline;text-underline-offset:2px}
-.done{position:absolute;inset:0;background:#fff;border-radius:var(--r);padding:2.5rem 1.75rem;display:flex;flex-direction:column;justify-content:center;overflow-y:auto;opacity:0;visibility:hidden;transition:opacity .5s var(--ease),visibility 0s .5s}
-.done.show{opacity:1;visibility:visible;transition:opacity .5s var(--ease)}
+/* depois do envio o cartão encolhe ao conteúdo: só o painel de confirmação fica */
+.done{display:none;flex-direction:column;padding:.5rem 0 .25rem}
+.form.sent > :not(.done){display:none}
+.form.sent{align-self:start}
+.form.sent .done{display:flex;animation:done-in .5s var(--ease) both}
+@keyframes done-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .done .dk{width:2.5rem;height:2.5rem;border:1px solid var(--navy);border-radius:var(--r);display:grid;place-items:center;color:var(--navy)}
 .done .dk svg{width:1rem;height:1rem}
-.done .h3{margin-top:1.5rem}
+.done .h3{margin-top:1.5rem;color:var(--navy)}
 .done p{margin-top:.625rem;color:var(--muted);max-width:28em}
 .done .done-alt{font-size:.875rem}
 .done .tlink{margin-top:1.5rem;align-self:flex-start;color:var(--aco)}
@@ -819,6 +829,7 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
   .js .house .base,.js .house [data-sys],.js .house .hs li{opacity:1!important;transform:none!important;animation:none!important}
   .js .hero .h1 .l,.js .plan .plan-h{clip-path:none!important;transform:none!important}
   .js .plan .plan-b,.js .form .fields>*,.js .plan .lvl i.on{opacity:1!important;transform:none!important}
+  .form.sent .done{animation:none}
   .js .form::before{transform:none!important}
   .js .phrases li::after,.js .cm::before{transform:none!important}
   .hart{--py:0px!important}

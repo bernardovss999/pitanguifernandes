@@ -209,12 +209,21 @@
     d.addEventListener('click',function(e){ if(picked && !e.target.closest('.sis')) pick(null); });
   })();
 
-  /* ---------- WhatsApp: some quando a seção Conversar está na tela (lá já há o formulário) ---------- */
+  /* ---------- WhatsApp: some quando a seção Conversar (lá já há o formulário) ou o comparativo estão na tela ---------- */
   (function(){
-    var wa=d.querySelector('.wa'), conv=d.getElementById('conversar');
-    if(!wa || !conv || !('IntersectionObserver' in window)) return;
-    new IntersectionObserver(function(es){ wa.classList.toggle('hide', es[0].isIntersecting); },{rootMargin:'0px 0px -30% 0px',threshold:0}).observe(conv);
+    var wa=d.querySelector('.wa'); if(!wa || !('IntersectionObserver' in window)) return;
+    var vis=[]; var els=[].slice.call(d.querySelectorAll('#conversar, .mx-wrap')); if(!els.length) return;
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ vis[els.indexOf(e.target)]=e.isIntersecting && e.intersectionRect.height>0; });
+      wa.classList.toggle('hide', vis.some(Boolean));
+    },{rootMargin:'0px 0px -30% 0px',threshold:0});
+    els.forEach(function(el){ io.observe(el); });
   })();
+
+  /* ---------- "Conversar sobre o Essencial" na home: desce até o formulário já com o plano na mensagem ---------- */
+  d.querySelectorAll('.plan-cta[data-plano]').forEach(function(a){
+    a.addEventListener('click',function(){ var m=d.getElementById('msg'); if(m && !m.value) m.value='Tenho interesse no plano '+a.getAttribute('data-plano')+'.'; });
+  });
 
   /* ---------- comparativo: no celular, um plano por vez ---------- */
   (function(){
@@ -269,9 +278,10 @@
       var url='https://wa.me/5521967072931?text='+encodeURIComponent(txt);
       if(again) again.href=url;
       window.open(url,'_blank','noopener');
-      done.classList.add('show');
+      form.classList.add('sent'); done.classList.add('show');
+      if(form.getBoundingClientRect().top<0) form.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
       d.getElementById('again').focus();
     });
-    d.getElementById('again').addEventListener('click',function(){ form.reset(); done.classList.remove('show'); form.nome.focus(); });
+    d.getElementById('again').addEventListener('click',function(){ form.reset(); form.classList.remove('sent'); done.classList.remove('show'); form.nome.focus(); });
   })();
 })();
