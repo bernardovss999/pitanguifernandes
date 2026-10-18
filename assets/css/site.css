@@ -359,7 +359,7 @@ button.tlink{background:none;border:0;cursor:pointer;padding-inline:0}
 .step.on .mk,.step.on .mk::after{background:var(--navy)}
 .step.on .nn{color:var(--navy);opacity:1}
 .step.cur .mk,.step.cur .mk::after{background:var(--pitanga)}
-.step h3{margin-top:1.25rem}
+.step h3,.step h2{margin-top:1.25rem}
 .step p{margin-top:.75rem;color:var(--muted);max-width:26em}
 .steps-note{position:relative;margin-top:clamp(3.5rem,2.5rem + 3vw,5rem);padding:2.25rem 1.75rem;background:var(--nevoa);clip-path:var(--cut);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1.25rem 2.5rem}
 .steps-note::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--pitanga)}
@@ -535,7 +535,7 @@ button.tlink{background:none;border:0;cursor:pointer;padding-inline:0}
 .js .cm.in::before{transform:none}
 .cm .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
 .cm .nn{font-size:2.5rem}
-.cm h3{font-family:var(--serif);font-weight:600;font-size:1.5rem;line-height:1.2;color:var(--navy)}
+.cm h3,.cm h2{font-family:var(--serif);font-weight:600;font-size:1.5rem;line-height:1.2;color:var(--navy)}
 .cm p{margin-top:.625rem;color:var(--muted);max-width:26em}
 @media (hover:hover){.cm:hover::before{background:var(--aco)}.cm:hover .nn{color:var(--navy);opacity:1}}
 @media (min-width:43.75em){.comps{grid-template-columns:repeat(2,minmax(0,1fr))}.cm{padding-right:1.5rem}}
