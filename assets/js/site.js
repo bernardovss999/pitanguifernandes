@@ -216,6 +216,18 @@
     new IntersectionObserver(function(es){ wa.classList.toggle('hide', es[0].isIntersecting); },{rootMargin:'0px 0px -30% 0px',threshold:0}).observe(conv);
   })();
 
+  /* ---------- comparativo: no celular, um plano por vez ---------- */
+  (function(){
+    var w=d.querySelector('.mx-wrap'); if(!w) return;
+    var bs=w.querySelectorAll('.mx-seg button');
+    bs.forEach(function(b){ b.addEventListener('click',function(){
+      w.setAttribute('data-show',b.getAttribute('data-show'));
+      bs.forEach(function(x){ x.setAttribute('aria-pressed', x===b ? 'true' : 'false'); });
+    }); });
+    /* chegando com ?plano=Premium, o comparativo já abre nesse plano */
+    var q=/[?&]plano=([^&#]+)/.exec(location.search); if(q){ bs.forEach(function(b){ if(b.getAttribute('data-show')===decodeURIComponent(q[1])) b.click(); }); }
+  })();
+
   /* ---------- comparativo dos planos (sanfona) ---------- */
   (function(){
     var acc=d.getElementById('comparativo'), btn=d.getElementById('acc-btn'), mx=d.getElementById('matrix');
@@ -226,7 +238,8 @@
       if(open) mx.removeAttribute('inert'); else mx.setAttribute('inert','');
       if(!open){ var t=acc.getBoundingClientRect().top; if(t<0) window.scrollBy({top:t-100,behavior:reduce?'auto':'smooth'}); }
     });
-    if(location.hash==='#comparativo') btn.click();
+    /* na página Planos ele já vem aberto; só abre aqui quando chega fechado pelo link #comparativo */
+    if(location.hash==='#comparativo' && !acc.classList.contains('open')) btn.click();
   })();
 
   /* ---------- formulário: validação gentil; o pedido segue pelo WhatsApp ---------- */
