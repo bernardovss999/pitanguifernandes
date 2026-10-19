@@ -1,0 +1,41 @@
+<section class="sec bg-navy talk ent page-first" id="conversar" aria-labelledby="h-talk">
+  <div class="wrap grid">
+    <div class="txt">
+      <p class="eyebrow" data-h>Conversar</p>
+      <h1 class="h1 split" id="h-talk" style="--d:.06s">Vamos conversar sobre a sua casa.</h1>
+      <p class="body" data-h style="--d:.4s">O primeiro contato é uma conversa, sem compromisso, com Samuel ou Diana. Ouvimos como a casa funciona hoje e dizemos com franqueza se e como podemos ajudar.</p>
+{{DIRECT}}
+    </div>
+
+    <form class="form" id="form" novalidate data-h style="--d:.3s">
+      <h2 class="form-t">Solicitar uma conversa</h2>
+      <p class="sub">Preencha e enviaremos a sua mensagem pelo WhatsApp.</p>
+      <div class="fields">
+        <div class="two">
+          <div class="f" id="f-nome"><label for="nome">Nome</label><input id="nome" name="nome" autocomplete="name" required><span class="msg" aria-live="polite"></span></div>
+          <div class="f" id="f-tel"><label for="tel">WhatsApp ou telefone</label><input id="tel" name="tel" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(21) 90000-0000" required><span class="msg" aria-live="polite"></span></div>
+        </div>
+        <div class="f" id="f-bairro"><label for="bairro">Bairro</label><input id="bairro" name="bairro" autocomplete="address-level3" placeholder="Ex.: Icaraí, São Francisco, Camboinhas"><span class="msg" aria-live="polite"></span></div>
+        <fieldset class="f">
+          <legend>Tipo de imóvel</legend>
+          <div class="seg">
+            <label><input type="radio" name="tipo" value="Casa" checked><span>Casa</span></label>
+            <label><input type="radio" name="tipo" value="Apartamento"><span>Apartamento</span></label>
+            <label><input type="radio" name="tipo" value="Segunda residência"><span>Segunda residência</span></label>
+          </div>
+        </fieldset>
+        <div class="f"><label for="msg">Mensagem <em>opcional</em></label><textarea id="msg" name="msg" placeholder="Conte o que mais preocupa você hoje na casa."></textarea></div>
+      </div>
+      <button class="btn" type="submit">Enviar pelo WhatsApp</button>
+      <p class="micro">Seus dados são usados apenas para este contato, conforme a LGPD. <a href="privacidade.html">Política de Privacidade</a>.</p>
+
+      <div class="done" id="done" role="status" aria-live="polite">
+        <svg class="ic draw" aria-hidden="true"><use href="#i-ok"/></svg>
+        <h3 class="h3">Falta só um toque.</h3>
+        <p>Abrimos o WhatsApp com a sua mensagem pronta. Para concluir, toque em enviar na conversa. Samuel ou Diana vão retornar para combinar a conversa.</p>
+        <p class="done-alt">O WhatsApp não abriu? <a id="wa-again" href="{{WA}}" target="_blank" rel="noopener">Abrir de novo</a> ou ligue para <a href="tel:+5521967072931" class="num">(21) 96707-2931</a>.</p>
+        <button class="tlink" type="button" id="again">Enviar outra solicitação</button>
+      </div>
+    </form>
+  </div>
+</section>

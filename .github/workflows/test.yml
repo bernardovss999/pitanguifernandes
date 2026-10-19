@@ -1,0 +1,21 @@
+name: Testes de regressão
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      # o HTML/CSS publicado precisa ser exatamente o que o gerador produz
+      - name: Gerador reproduz os arquivos publicados
+        run: python3 src/build.py && git diff --exit-code
+      - run: npm install --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
