@@ -60,10 +60,31 @@ async function baseline(browser) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pf-base-'));
   execSync(`git -C "${ROOT}" archive ${ref} | tar -x -C "${dir}"`);
   const srv = await serve(dir);
-  try { return await measure(browser, 'http://127.0.0.1:' + srv.address().port + '/'); }
+  let base;
+  try { base = await measure(browser, 'http://127.0.0.1:' + srv.address().port + '/'); }
   finally { srv.close(); fs.rmSync(dir, { recursive: true, force: true }); }
+  /* mudança de layout intencional: a referência gravada no commit difere da referência da main.
+     A diferença entre as duas é o deslocamento declarado de cada bloco; ele é somado à medição da main,
+     e qualquer outro movimento continua falhando */
+  let old = null;
+  try { old = JSON.parse(execSync(`git -C "${ROOT}" show ${ref}:tests/layout-baseline.json`, { encoding: 'utf8', maxBuffer: 1 << 26 })); } catch (e) {}
+  return old ? declared(base, old, JSON.parse(fs.readFileSync(FILE, 'utf8'))) : base;
 }
-module.exports = { measure, compare, baseline, FILE };
+function declared(base, old, cur) {
+  const out = {};
+  for (const k of new Set([...Object.keys(base), ...Object.keys(cur)])) {
+    out[k] = {};
+    for (const e of new Set([...Object.keys(base[k] || {}), ...Object.keys(cur[k] || {})])) {
+      const m = base[k] && base[k][e], a = old[k] && old[k][e], b = cur[k] && cur[k][e];
+      if (m && a && b) out[k][e] = m.map((v, i) => Math.round((v + b[i] - a[i]) * 10) / 10);
+      else if (m && !(a && !b)) out[k][e] = m;   /* sem declaração: tem de ficar onde está */
+      else if (!m && b && !a) out[k][e] = b;     /* bloco novo declarado */
+      /* bloco removido de propósito (estava na referência antiga e saiu da nova): não se cobra */
+    }
+  }
+  return out;
+}
+module.exports = { measure, compare, baseline, declared, FILE };
 
 if (require.main === module) {
   const { serve, launch } = require('./helpers');

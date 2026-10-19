@@ -106,6 +106,79 @@ function overlap(a, b) { return a && b && a.x < b.x + b.width && b.x < a.x + a.w
     await c.close();
   }
 
+  console.log('\nAbertura de todas as páginas');
+  /* o conteúdo da abertura começava longe demais do cabeçalho (~100 px no desktop): agora fica logo abaixo, sem encostar */
+  for (const [vp, m, max] of [[SMALL, true, 40], [MOBILE, true, 40], [{ width: 1024, height: 768 }, false, 72], [{ width: 1366, height: 768 }, false, 72], [DESKTOP, false, 72], [{ width: 1920, height: 1080 }, false, 80]]) {
+    const c = await ctx(vp, m);
+    await c.addInitScript(() => { try { sessionStorage.setItem('pf-intro', '1'); sessionStorage.setItem('pf-wa-x', '1'); } catch (e) {} });
+    await test(`${vp.width}px: conteúdo da abertura logo abaixo do cabeçalho em todas as páginas`, async () => {
+      const bad = [];
+      for (const pg of PAGES) {
+        if (pg === '404') continue; /* página de erro centralizada na tela, de propósito */
+        if (m && pg === 'index') continue; /* no celular a arte 3D abre a home (testada acima) */
+        const p = await open(c, pg + '.html', 300);
+        await p.addStyleTag({ content: '*{transform:none!important;translate:none!important;transition:none!important;animation:none!important}' }); /* mede a posição final, sem o deslize da entrada */
+        const r = await p.evaluate(() => {
+          const sec = document.querySelector('main > section'), hdr = document.querySelector('.hdr').getBoundingClientRect();
+          const tops = [...sec.querySelectorAll('.eyebrow, h1, h2, .portrait')].filter(e => e.offsetParent).map(e => e.getBoundingClientRect().top);
+          return { gap: Math.min(...tops) - hdr.bottom };
+        });
+        if (r.gap > max || r.gap < 16) bad.push(`${pg}: ${Math.round(r.gap)}px entre o cabeçalho e o conteúdo`);
+        await p.close();
+      }
+      ok(!bad.length, bad.join('; '));
+    });
+    await c.close();
+  }
+
+  console.log('\nCaça de bugs no celular');
+  /* varre cada página inteira nos celulares mais comuns: nada vazando escondido para fora da tela, texto sobre texto,
+     imagem quebrada ou letra pequena demais para ler */
+  for (const vp of [{ width: 320, height: 640 }, SMALL, MOBILE, { width: 414, height: 896 }]) {
+    const c = await ctx(vp, true);
+    await c.addInitScript(() => { try { sessionStorage.setItem('pf-intro', '1'); sessionStorage.setItem('pf-wa-x', '1'); } catch (e) {} });
+    await test(`${vp.width}px: nada vaza da tela, sem texto sobreposto, imagem quebrada ou letra menor que 11 px`, async () => {
+      const bad = [];
+      for (const pg of PAGES) {
+        const p = await open(c, pg + '.html', 300);
+        await p.addStyleTag({ content: '*{transition:none!important;animation:none!important}' });
+        await p.evaluate(async () => {
+          document.body.classList.add('ready'); document.querySelectorAll('[data-r]').forEach(e => e.classList.add('in'));
+          document.querySelectorAll('[aria-expanded=false][aria-controls]:not(#burger)').forEach(b => b.click()); /* abre o comparativo e afins */
+          document.documentElement.style.scrollBehavior = 'auto';
+          for (let y = 0; y < document.body.scrollHeight; y += 700) { scrollTo(0, y); await new Promise(r => setTimeout(r, 20)); }
+          scrollTo(0, 0); await Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
+        });
+        const r = await p.evaluate(() => {
+          const vw = innerWidth, out = [];
+          /* dentro de um recipiente fechado (sanfona com altura zero que corta o conteúdo) não conta */
+          const closed = e => { for (let a = e.parentElement; a; a = a.parentElement) { const b = a.getBoundingClientRect(); if ((b.height < 1 || b.width < 1) && getComputedStyle(a).overflow !== 'visible') return true; } return false; };
+          const vis = e => { const cs = getComputedStyle(e); return e.getClientRects().length && cs.visibility !== 'hidden' && +cs.opacity > .05 && !e.closest('[aria-hidden=true],.mnav,.intro,[hidden]') && !closed(e); };
+          /* sai da tela sem um pai que corte (overflow) dentro da tela; o corte do body é só rede de segurança e não conta */
+          const clipped = e => { for (let a = e.parentElement; a && a !== document.body; a = a.parentElement) if (getComputedStyle(a).overflowX !== 'visible' && a.getBoundingClientRect().right <= vw + 1) return true; return false; };
+          const txt = e => [...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim());
+          const name = e => e.tagName.toLowerCase() + (e.className && typeof e.className === 'string' ? '.' + e.className.split(' ')[0] : '') + ' "' + e.textContent.trim().slice(0, 20) + '"';
+          document.querySelectorAll('body *').forEach(e => {
+            if (!vis(e) || getComputedStyle(e).position === 'fixed') return; const b = e.getBoundingClientRect();
+            if (b.width && (b.right > vw + 1 || b.left < -1) && !clipped(e)) out.push('vaza da tela: ' + name(e));
+          });
+          document.querySelectorAll('main *, footer *, .hdr *').forEach(e => { if (vis(e) && txt(e) && parseFloat(getComputedStyle(e).fontSize) < 11) out.push('letra ' + getComputedStyle(e).fontSize + ': ' + name(e)); });
+          document.querySelectorAll('img').forEach(i => { if (i.getAttribute('src') && !i.naturalWidth) out.push('imagem quebrada: ' + i.getAttribute('src')); });
+          const leaves = [...document.querySelectorAll('main *')].filter(e => vis(e) && txt(e)).map(e => [e, e.getBoundingClientRect()]);
+          for (let i = 0; i < leaves.length; i++) for (let j = i + 1; j < leaves.length; j++) {
+            const [a, A] = leaves[i], [b, B] = leaves[j]; if (a.contains(b) || b.contains(a)) continue;
+            if (Math.min(A.right, B.right) - Math.max(A.left, B.left) > 4 && Math.min(A.bottom, B.bottom) - Math.max(A.top, B.top) > 4) out.push('texto sobre texto: ' + name(a) + ' / ' + name(b));
+          }
+          return out;
+        });
+        r.forEach(x => bad.push(pg + ': ' + x));
+        await p.close();
+      }
+      ok(!bad.length, bad.length + ' problemas: ' + [...new Set(bad)].slice(0, 6).join('; '));
+    });
+    await c.close();
+  }
+
   console.log('\nInterações');
   {
     const c = await ctx(MOBILE, true); const p = await open(c, 'index.html', 4800);
@@ -175,7 +248,8 @@ function overlap(a, b) { return a && b && a.x < b.x + b.width && b.x < a.x + a.w
         return { names: links.map(a => a.textContent.trim()), first: links[0] && links[0].getAttribute('href'),
           lock: box(document.querySelector('.hdr .brand')), nav: box(document.querySelector('.hdr .nav')), btn: box(document.querySelector('.hdr .btn')), wrap: box(document.querySelector('.hdr .wrap')),
           waTop: !!document.querySelector('.hdr [href*="wa.me"], .hdr .hwa'), btnText: (document.querySelector('.hdr .btn') || {}).textContent,
-          wrapped: links.some(a => a.getBoundingClientRect().height > 40) };
+          wrapped: links.some(a => a.getBoundingClientRect().height > 40),
+          btnFits: (b => b.scrollWidth <= b.clientWidth + 1)(document.querySelector('.hdr .btn')) };
       });
       ok(r.names[0] === 'Início' && r.first === 'index.html', 'primeiro item: ' + r.names[0]);
       ok(r.names.join('|') === 'Início|Governança|Método|Planos|Família|Compromissos', r.names.join('|'));
@@ -185,6 +259,7 @@ function overlap(a, b) { return a && b && a.x < b.x + b.width && b.x < a.x + a.w
       ok(r.btnText.trim() === 'Conversar', 'botão do topo: ' + r.btnText);
       ok(Math.abs(r.wrap.right - r.btn.right) <= 41, 'Conversar não fecha a linha do cabeçalho à direita');
       ok(!r.wrapped, 'algum item quebrou em duas linhas');
+      ok(r.btnFits, 'texto do Conversar vaza da borda do botão');
     });
     await c.close();
   }
