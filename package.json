@@ -3,8 +3,9 @@
   "private": true,
   "description": "Site da Pitangui Fernandes. O HTML/CSS publicado é gerado por src/build.py.",
   "scripts": {
-    "build": "python3 src/build.py",
-    "test": "node tests/regression.js"
+    "gerar": "python3 src/build.py",
+    "test": "node tests/regression.js",
+    "test:layout": "node tests/layout.js"
   },
   "devDependencies": {
     "playwright": "1.56.1"
