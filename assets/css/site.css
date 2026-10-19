@@ -224,6 +224,14 @@ button.tlink{background:none;border:0;cursor:pointer;padding-inline:0}
 }
 .hdr .btn[aria-current="page"]{opacity:.55;pointer-events:none}
 
+/* WhatsApp no cabeçalho, sempre à mão */
+.hwa{display:grid;place-items:center;width:2.75rem;height:2.75rem;flex:none;margin-left:auto;border-radius:50%;background:#25D366;color:#fff;transition:transform .2s var(--ease)}
+.hwa svg{width:1.375rem;height:1.375rem}
+@media (hover:hover){.hwa:hover{transform:translateY(-1px)}}
+.hwa:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+.hdr .wrap>.hwa+.burger{margin-left:0}
+@media (min-width:64em){.hdr .wrap{justify-content:flex-start}.hdr .nav{margin-inline:auto}.hwa{margin-left:-.5rem;width:2.5rem;height:2.5rem}.hwa svg{width:1.25rem;height:1.25rem}}
+
 /* botão do menu: rótulo + duas linhas que viram um X */
 .burger{position:relative;z-index:2;display:flex;align-items:center;gap:.75rem;height:3rem;margin-right:-.5rem;padding:0 .5rem 0 .75rem;background:none;border:0;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .burger .bt{display:grid;height:.875rem;overflow:hidden;font:500 .6875rem/.875rem var(--sans);letter-spacing:.2em;text-transform:uppercase;text-align:right}
@@ -238,6 +246,8 @@ button.tlink{background:none;border:0;cursor:pointer;padding-inline:0}
 .menu-open .burger .bl i{top:5.25px;width:1.25rem;right:2px}
 .menu-open .burger .bl i:first-child{transform:rotate(45deg)}
 .menu-open .burger .bl i:last-child{transform:rotate(-45deg)}
+/* no celular estreito o menu fica só com as linhas, para caber o WhatsApp ao lado */
+@media (max-width:29.99em){.burger .bt{display:none}.burger{padding-left:.5rem}.hdr .wrap{gap:.5rem}}
 .menu-open .hdr,.menu-open.top-dark .hdr{position:fixed;left:0;right:0;color:#fff;background:transparent;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
 .menu-open .hdr .prog{opacity:0}
 .menu-open.menu-light .hdr{color:var(--navy);background:#fff;box-shadow:0 1px 0 var(--line)}
@@ -278,8 +288,11 @@ button.tlink{background:none;border:0;cursor:pointer;padding-inline:0}
 /* ---- 01 abertura ---- */
 .hero{position:relative;min-height:calc(100vh - var(--fh,0px));min-height:calc(100svh - var(--fh,0px));display:flex;flex-direction:column;overflow:hidden;background:radial-gradient(90% 70% at 88% 92%,rgba(58,78,112,.34) 0%,rgba(7,27,54,0) 62%),radial-gradient(70% 60% at 0% 0%,rgba(14,42,82,.5) 0%,rgba(7,27,54,0) 70%),var(--navy)}
 /* no celular a arte fecha a abertura, abaixo do texto, sangrando à direita; a partir de 600px volta a flutuar ao lado do texto */
-.hart{--py:0px;position:relative;order:2;flex:none;align-self:flex-end;margin:auto -7vw -2vw 0;width:min(58vw,20rem);height:auto;overflow:visible;pointer-events:none;transform:translateY(var(--py))}
-@media (max-width:37.49em){.hcota{display:none}}
+/* no celular a arte abre a página, logo abaixo do cabeçalho, com as linhas de medida; a partir de 600px flutua ao lado do texto */
+.hart{--py:0px;position:relative;order:0;flex:none;align-self:center;margin:calc(var(--hh) - .75rem) auto -1.5rem;width:min(86vw,24rem,42vh);height:auto;overflow:visible;pointer-events:none;transform:translateY(var(--py))}
+/* depois de montada, a arte respira devagar */
+.ready .hart{animation:hfloat 7s ease-in-out 3s infinite}
+@keyframes hfloat{50%{translate:0 -10px}}
 .hgrid path{fill:none;stroke:#A9B5C8;stroke-opacity:.1;stroke-width:1;vector-effect:non-scaling-stroke}
 .hcota path{fill:none;stroke:#A9B5C8;stroke-opacity:.5;stroke-width:1;stroke-linecap:round;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:0}
 .hart .dep use{transform:translate(calc(var(--n) * -2.08px),calc(var(--n) * 1.2px))}
@@ -293,7 +306,7 @@ button.tlink{background:none;border:0;cursor:pointer;padding-inline:0}
 .js body:not(.ready) .hart .dep use{transform:none}
 .js body:not(.ready) .hart .hgrid,.js body:not(.ready) .hart .hsh{opacity:0}
 .js body:not(.ready) .hcota path{stroke-dashoffset:1}
-.hero-in{position:relative;z-index:1;flex:none;display:flex;flex-direction:column;justify-content:flex-start;padding-top:calc(var(--hh) + 2.5rem);padding-bottom:1.25rem}
+.hero-in{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding-top:0;padding-bottom:3.5rem}
 .hero-text{max-width:38rem}
 .hero .h1{margin-top:1.5rem}
 .hero .h1 .l{display:block;text-wrap:balance}
@@ -710,15 +723,37 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 @media (max-width:47.99em){.foot{padding-bottom:calc(5.5rem + env(safe-area-inset-bottom))}}
 
 /* ============ 11 WHATSAPP: botão discreto, sem balão e sem pulsar ============ */
-.wa{position:fixed;right:max(1rem,env(safe-area-inset-right));bottom:calc(1rem + env(safe-area-inset-bottom));z-index:45;width:3rem;height:3rem;border-radius:50%;display:grid;place-items:center;background:var(--navy);box-shadow:0 0 0 1px rgba(255,255,255,.18),0 6px 16px -8px rgba(7,27,54,.5);transition:transform .2s var(--ease),opacity .3s,visibility 0s .3s}
-.wa svg{width:1.5rem;height:1.5rem}
-.wa:focus-visible{outline:2px solid var(--navy);outline-offset:4px}
-@media (hover:hover){.wa:hover{transform:translateY(-2px)}}
-.js .wa{opacity:0;visibility:hidden}
-.js .ready .wa{opacity:1;visibility:visible;transition:opacity .5s var(--ease) .6s,transform .2s var(--ease)}
-/* só aparece depois da primeira tela, e some quando a seção Conversar está à vista */
-.menu-open .wa,.wa.hide,.wa.wait{opacity:0!important;visibility:hidden!important}
-@media (min-width:48em){.wa{right:1.75rem;bottom:1.75rem;width:3.5rem;height:3.5rem}.wa svg{width:1.625rem;height:1.625rem}}
+/* botão flutuante e balão de boas-vindas (aparece uma vez por sessão, fecha no X) */
+.wa{position:fixed;right:max(1rem,env(safe-area-inset-right));bottom:calc(1rem + env(safe-area-inset-bottom));z-index:45;display:flex;flex-direction:column;align-items:flex-end;gap:.875rem;pointer-events:none;transition:opacity .3s ease,visibility 0s}
+.wa>*{pointer-events:auto}
+.wa-btn{position:relative;width:3.5rem;height:3.5rem;border-radius:50%;display:grid;place-items:center;background:#25D366;box-shadow:0 10px 24px -10px rgba(7,27,54,.5);transition:transform .2s var(--ease)}
+.wa-btn svg{width:1.75rem;height:1.75rem}
+.wa-btn::after{content:"";position:absolute;inset:0;border-radius:50%;border:1.5px solid #25D366;opacity:0}
+.wa.on .wa-btn::after{animation:wa-ring 2.4s var(--ease) 2}
+@keyframes wa-ring{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(1.6)}}
+.wa-btn:focus-visible{outline:2px solid var(--navy);outline-offset:4px}
+@media (hover:hover){.wa-btn:hover{transform:translateY(-2px)}}
+.wa-pop{position:relative;width:min(19rem,calc(100vw - 2rem));padding:1.125rem 1.125rem 1rem;background:#fff;color:var(--ink);border-radius:var(--r);box-shadow:0 24px 48px -16px rgba(7,27,54,.45),0 0 0 1px rgba(7,27,54,.08);transform-origin:calc(100% - 1.75rem) 100%;opacity:0;visibility:hidden;transform:translateY(10px) scale(.96);transition:opacity .3s ease,transform .4s var(--ease),visibility 0s .4s}
+.wa-pop::after{content:"";position:absolute;right:1.375rem;bottom:-6px;width:12px;height:12px;background:#fff;transform:rotate(45deg)}
+.wa-pop.show{opacity:1;visibility:visible;transform:none;transition:opacity .45s ease,transform .6s var(--ease)}
+.wa-x{position:absolute;top:.375rem;right:.375rem;width:2.75rem;height:2.75rem;display:grid;place-items:center;border:0;background:none;color:var(--muted);cursor:pointer}
+.wa-x svg{width:1rem;height:1rem}
+@media (hover:hover){.wa-x:hover{color:var(--navy)}}
+.wa-who{display:flex;align-items:center;gap:.75rem;padding-right:2rem}
+.wa-av{position:relative;width:2.5rem;height:2.5rem;flex:none;border-radius:50%;background:var(--navy);display:grid;place-items:center}
+.wa-av svg{width:1.0625rem;height:auto}
+.wa-av::after{content:"";position:absolute;right:0;bottom:1px;width:.625rem;height:.625rem;border-radius:50%;background:#25D366;box-shadow:0 0 0 2px #fff}
+.wa-who b{display:block;font-size:.9375rem;font-weight:600;color:var(--navy);line-height:1.25}
+.wa-who small{display:block;font-size:.75rem;color:var(--muted);line-height:1.3}
+.wa-t{margin-top:.875rem;padding:.625rem .8125rem;border-radius:2px 12px 12px 12px;background:var(--nevoa);font-size:.9375rem;font-weight:500;line-height:1.4;color:var(--navy)}
+.wa-s{margin-top:.5rem;font-size:.875rem;line-height:1.5;color:var(--muted)}
+.wa-go{margin-top:.875rem;display:flex;align-items:center;justify-content:center;gap:.625rem;height:2.875rem;border-radius:var(--r);background:var(--navy);color:#fff;font-size:.8125rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;transition:background .2s}
+.wa-go::before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:#25D366}
+@media (hover:hover){.wa-go:hover{background:var(--aco)}}
+.js .wa-btn{opacity:0;transform:translateY(12px) scale(.9)}
+.js .ready .wa-btn{opacity:1;transform:none;transition:opacity .5s var(--ease) .6s,transform .6s var(--ease) .6s}
+.menu-open .wa,.wa.hide{opacity:0!important;visibility:hidden!important}
+@media (min-width:48em){.wa{right:1.75rem;bottom:1.75rem}.wa-btn{width:3.75rem;height:3.75rem}}
 
 /* ============ 12 FAIXA DE PRÉVIA (Sett) — remover quando o site virar oficial ============ */
 .sett-faixa{margin:0;max-width:none;padding:9px 16px;background:#0B0C0E;color:#B7BCC4;font:400 12.5px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-align:center;letter-spacing:.01em}
@@ -834,7 +869,9 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
   .js .phrases li::after,.js .cm::before{transform:none!important}
   .hart{--py:0px!important}
   .intro{display:none}
-  .js .wa:not(.hide):not(.wait){opacity:1!important;visibility:visible!important}
+  .js .wa-btn{opacity:1!important;transform:none!important}
+  .wa.on .wa-btn::after{animation:none}
+  .hart{animation:none!important}
   .fecho span{background-size:100% 1px!important}
   ::view-transition-old(root),::view-transition-new(root){animation:none!important}
 }

@@ -1,0 +1,86 @@
+[
+ {
+  "id": "eletrica",
+  "label": "Elétrica",
+  "grupo": "todos",
+  "x": 57.82,
+  "y": 52.85
+ },
+ {
+  "id": "hidraulica",
+  "label": "Hidráulica",
+  "grupo": "todos",
+  "x": 55.06,
+  "y": 58.55
+ },
+ {
+  "id": "ar-condicionado",
+  "label": "Ar-condicionado",
+  "grupo": "todos",
+  "x": 62.64,
+  "y": 32.9
+ },
+ {
+  "id": "bombas",
+  "label": "Bombas",
+  "grupo": "todos",
+  "x": 39.88,
+  "y": 62.73
+ },
+ {
+  "id": "gas",
+  "label": "Gás",
+  "grupo": "todos",
+  "x": 13.22,
+  "y": 41.07
+ },
+ {
+  "id": "piscina",
+  "label": "Piscina",
+  "grupo": "premium",
+  "x": 29.54,
+  "y": 57.6
+ },
+ {
+  "id": "jardim",
+  "label": "Jardim",
+  "grupo": "premium",
+  "x": 71.38,
+  "y": 48.86
+ },
+ {
+  "id": "automacao",
+  "label": "Automação",
+  "grupo": "premium",
+  "x": 51.38,
+  "y": 54.37
+ },
+ {
+  "id": "seguranca",
+  "label": "Segurança eletrônica",
+  "grupo": "premium",
+  "x": 43.33,
+  "y": 34.04
+ },
+ {
+  "id": "cobertura",
+  "label": "Cobertura e caixa d’água",
+  "grupo": "periodica",
+  "x": 51.15,
+  "y": 14.28
+ },
+ {
+  "id": "esquadrias",
+  "label": "Esquadrias",
+  "grupo": "periodica",
+  "x": 34.14,
+  "y": 31.0
+ },
+ {
+  "id": "areas-externas",
+  "label": "Áreas externas",
+  "grupo": "periodica",
+  "x": 35.98,
+  "y": 68.81
+ }
+]

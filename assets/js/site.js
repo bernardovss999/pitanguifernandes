@@ -64,8 +64,6 @@
       hdr.classList.toggle('solid', solid);
       if(hdr.getAttribute('data-tone')!==tone) hdr.setAttribute('data-tone',tone);
       setTheme(themeNow());
-      /* o balão do WhatsApp só entra depois da primeira tela */
-      if(wa) wa.classList.toggle('wait', y < vh*.5);
       if(prog) prog.style.transform='scaleX('+(M.max>0?Math.min(1,y/M.max):0)+')';
       /* a arte da abertura desce um pouco mais devagar que o texto */
       if(hart && !reduce && y < M.heroEnd) hart.style.setProperty('--py',(y*.06).toFixed(1)+'px');
@@ -224,6 +222,27 @@
   d.querySelectorAll('.plan-cta[data-plano]').forEach(function(a){
     a.addEventListener('click',function(){ var m=d.getElementById('msg'); if(m && !m.value) m.value='Tenho interesse no plano '+a.getAttribute('data-plano')+'.'; });
   });
+
+  /* ---------- WhatsApp: balão de boas-vindas após 4 s ou ao começar a rolar; fechado, não volta na sessão ---------- */
+  (function(){
+    var box=d.getElementById('wa'), pop=d.getElementById('wa-pop'), x=d.getElementById('wa-x');
+    if(!pop) return;
+    var KEY='pf-wa-x', shown=false, closed=false, timer;
+    try{ if(sessionStorage.getItem(KEY)) closed=true; }catch(e){}
+    if(d.getElementById('form') && !d.getElementById('planos')) closed=true; /* na página de contato o formulário já está à vista */
+    function show(){
+      if(shown || closed) return;
+      if(body.classList.contains('menu-open')){ timer=setTimeout(show,2000); return; }
+      shown=true; clearTimeout(timer); window.removeEventListener('scroll',onS);
+      pop.classList.add('show'); pop.setAttribute('aria-hidden','false'); box.classList.add('on');
+    }
+    function onS(){ if((window.scrollY||0)>120){ clearTimeout(timer); timer=setTimeout(show,600); } }
+    function close(){ closed=true; pop.classList.remove('show'); pop.setAttribute('aria-hidden','true'); try{ sessionStorage.setItem(KEY,'1'); }catch(e){} }
+    x.addEventListener('click',close);
+    pop.querySelector('.wa-go').addEventListener('click',close);
+    d.addEventListener('keydown',function(e){ if(e.key==='Escape' && pop.classList.contains('show')) close(); });
+    if(!closed){ timer=setTimeout(show,4000); window.addEventListener('scroll',onS,{passive:true}); }
+  })();
 
   /* ---------- comparativo: no celular, um plano por vez ---------- */
   (function(){
