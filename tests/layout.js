@@ -44,10 +44,9 @@ function compare(base, cur) {
     const a = base[k][e], b = cur[k] && cur[k][e];
     if (!a[2] && !a[3]) continue; /* oculto na referência */
     if (!b) { diffs.push(`${k} ${e}: sumiu`); continue; }
-    const far = r => r.some((v, i) => Math.abs(v - b[i]) > TOL);
-    /* bloco com mudança declarada também passa se cair exatamente onde a nova referência diz */
+    /* bloco com mudança declarada: cada medida vale se bater com main + deslocamento ou com a nova referência */
     const alt = base.__alt && base.__alt[k] && base.__alt[k][e];
-    if (far(a) && (!alt || far(alt))) diffs.push(`${k} ${e}: ${a.join(',')} -> ${b.join(',')}`);
+    if (a.some((v, i) => Math.abs(v - b[i]) > TOL && !(alt && Math.abs(alt[i] - b[i]) <= TOL))) diffs.push(`${k} ${e}: ${a.join(',')} -> ${b.join(',')}`);
   }
   for (const k of Object.keys(cur)) for (const e of Object.keys(cur[k])) if (!(base[k] && base[k][e])) diffs.push(`${k} ${e}: novo`);
   return diffs;
