@@ -44,7 +44,10 @@ function compare(base, cur) {
     const a = base[k][e], b = cur[k] && cur[k][e];
     if (!a[2] && !a[3]) continue; /* oculto na referência */
     if (!b) { diffs.push(`${k} ${e}: sumiu`); continue; }
-    if (a.some((v, i) => Math.abs(v - b[i]) > TOL)) diffs.push(`${k} ${e}: ${a.join(',')} -> ${b.join(',')}`);
+    const far = r => r.some((v, i) => Math.abs(v - b[i]) > TOL);
+    /* bloco com mudança declarada também passa se cair exatamente onde a nova referência diz */
+    const alt = base.__alt && base.__alt[k] && base.__alt[k][e];
+    if (far(a) && (!alt || far(alt))) diffs.push(`${k} ${e}: ${a.join(',')} -> ${b.join(',')}`);
   }
   for (const k of Object.keys(cur)) for (const e of Object.keys(cur[k])) if (!(base[k] && base[k][e])) diffs.push(`${k} ${e}: novo`);
   return diffs;
@@ -71,12 +74,15 @@ async function baseline(browser) {
   return old ? declared(base, old, JSON.parse(fs.readFileSync(FILE, 'utf8'))) : base;
 }
 function declared(base, old, cur) {
-  const out = {};
+  const out = {}, alt = {};
+  /* o deslocamento de um bloco que antes era centralizado na tela depende da altura da faixa da Sett (fonte do sistema);
+     por isso a posição gravada na nova referência também vale para os blocos com mudança declarada */
+  Object.defineProperty(out, '__alt', { value: alt });
   for (const k of new Set([...Object.keys(base), ...Object.keys(cur)])) {
     out[k] = {};
     for (const e of new Set([...Object.keys(base[k] || {}), ...Object.keys(cur[k] || {})])) {
       const m = base[k] && base[k][e], a = old[k] && old[k][e], b = cur[k] && cur[k][e];
-      if (m && a && b) out[k][e] = m.map((v, i) => Math.round((v + b[i] - a[i]) * 10) / 10);
+      if (m && a && b) { out[k][e] = m.map((v, i) => Math.round((v + b[i] - a[i]) * 10) / 10); if (a.some((v, i) => v !== b[i])) (alt[k] = alt[k] || {})[e] = b; }
       else if (m && !(a && !b)) out[k][e] = m;   /* sem declaração: tem de ficar onde está */
       else if (!m && b && !a) out[k][e] = b;     /* bloco novo declarado */
       /* bloco removido de propósito (estava na referência antiga e saiu da nova): não se cobra */
