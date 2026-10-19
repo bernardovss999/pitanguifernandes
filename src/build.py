@@ -187,11 +187,11 @@ def s04(page=False):
 
 # ===================================================================== 05 PLANOS
 PLANS = [
- ('essencial', 'Essencial', 'Organização e controle', 'Para quem quer a casa em ordem e alguém que responda por ela.', 1, '790',
+ ('essencial', 'Essencial', 'Organização e controle', 'Para quem quer a casa em ordem e alguém que responda por ela.', 1,
   ['Uma visita por mês', 'Plano de manutenção preventiva anual', 'Rede de prestadores homologados', 'Acompanhamento remoto de reparos', 'Relatório mensal resumido']),
- ('premium', 'Premium', 'Gestão ativa', 'Para casas maiores, rotinas intensas e segundas residências.', 2, '1.690',
+ ('premium', 'Premium', 'Gestão ativa', 'Para casas maiores, rotinas intensas e segundas residências.', 2,
   ['Duas visitas por mês', 'Piscina, jardim, automação e segurança eletrônica', 'Supervisão presencial de reparos e obras', 'Controle de custos por categoria', 'Atendimento prioritário']),
- ('concierge', 'Concierge', 'Gestão completa', 'Para propriedades complexas e proprietários que passam temporadas fora.', 3, '3.500',
+ ('concierge', 'Concierge', 'Gestão completa', 'Para propriedades complexas e proprietários que passam temporadas fora.', 3,
   ['Visitas semanais', 'Orçamento anual de investimentos e previsão', 'Supervisão semanal de obras', 'Canal de atendimento dedicado', 'Reuniões trimestrais com o proprietário']),
 ]
 def s05(page=False):
@@ -207,13 +207,12 @@ def s05(page=False):
           <p class="perfil">%s</p>
           <ul class="list">%s
           </ul>
-          <p class="price"><span class="pl">Mensalidade</span><span class="pv"><small>R$</small><b class="tnum">%s</b><small>/mês</small></span></p>
           <a class="tlink plan-cta" href="%s"%s>Conversar sobre o %s</a>
         </div>
       </article>''' % (n, pid, n, n, ''.join('<i%s style="--n:%d"></i>' % (' class="on"' if k < n else '', k) for k in range(3)), tag, name, tag, sint, perf,
-                       ''.join('\n          <li><i class="dia"></i>%s</li>' % it for it in items), price,
+                       ''.join('\n          <li><i class="dia"></i>%s</li>' % it for it in items),
                        ('contato.html?plano=%s' % name) if page else '#conversar', '' if page else ' data-plano="%s"' % name, name)
-                    for pid, name, sint, perf, n, price, items in PLANS)
+                    for pid, name, sint, perf, n, items in PLANS)
     cta = 'contato.html' if page else '#conversar'
     return '''<section class="sec bg-nevoa planos%s" id="planos" aria-labelledby="h-pla">
   <div class="wrap">
