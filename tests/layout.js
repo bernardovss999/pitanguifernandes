@@ -22,9 +22,11 @@ async function measure(browser, U) {
       await p.waitForTimeout(150);
       out[`${pg}@${w}`] = await p.evaluate(sel => {
         const r = {};
+        /* alturas medidas a partir do início do conteúdo: a faixa da Sett muda de altura conforme a fonte do sistema */
+        const top0 = document.querySelector('main').getBoundingClientRect().top + scrollY;
         sel.forEach(s => document.querySelectorAll(s).forEach((e, i) => {
           const b = e.getBoundingClientRect();
-          r[`${s}#${i}`] = [b.left, b.top + scrollY, b.width, b.height].map(v => Math.round(v * 10) / 10);
+          r[`${s}#${i}`] = [b.left, b.top + scrollY - top0, b.width, b.height].map(v => Math.round(v * 10) / 10);
         }));
         return r;
       }, SEL);
