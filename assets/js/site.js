@@ -223,17 +223,6 @@
     a.addEventListener('click',function(){ var m=d.getElementById('msg'); if(m && !m.value) m.value='Tenho interesse no plano '+a.getAttribute('data-plano')+'.'; });
   });
 
-  /* ---------- abertura: a luz acompanha o cursor (só em telas com mouse) ---------- */
-  (function(){
-    var h=d.querySelector('.hero'); if(!h || reduce || !matchMedia('(hover:hover)').matches) return;
-    var raf=0;
-    h.addEventListener('pointermove',function(e){
-      if(raf) return;
-      raf=requestAnimationFrame(function(){ raf=0; var r=h.getBoundingClientRect();
-        h.style.setProperty('--mx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%'); h.style.setProperty('--my',((e.clientY-r.top)/r.height*100).toFixed(1)+'%'); });
-    });
-  })();
-
   /* ---------- WhatsApp: balão de boas-vindas após 4 s ou ao começar a rolar; fechado, não volta na sessão ---------- */
   (function(){
     var box=d.getElementById('wa'), pop=d.getElementById('wa-pop'), x=d.getElementById('wa-x');

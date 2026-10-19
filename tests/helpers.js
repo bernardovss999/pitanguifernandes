@@ -4,10 +4,11 @@ let chromium;
 try { ({ chromium } = require('playwright')); } catch (e) { ({ chromium } = require('/opt/node-tools/node_modules/playwright')); }
 const ROOT = path.join(__dirname, '..');
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.xml': 'application/xml', '.txt': 'text/plain' };
-function serve() {
+function serve(root) {
+  root = root || ROOT;
   return new Promise(res => {
     const srv = http.createServer((req, rsp) => {
-      let f = path.join(ROOT, decodeURIComponent(req.url.split('?')[0]));
+      let f = path.join(root, decodeURIComponent(req.url.split('?')[0]));
       if (f.endsWith('/')) f += 'index.html';
       fs.readFile(f, (err, buf) => {
         if (err) { rsp.writeHead(404); rsp.end('nf'); return; }
