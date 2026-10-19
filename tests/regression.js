@@ -199,9 +199,14 @@ function overlap(a, b) { return a && b && a.x < b.x + b.width && b.x < a.x + a.w
   }
   {
     const c = await ctx(MOBILE, true); const p = await open(c, 'planos.html');
-    await test('planos mostram as três mensalidades', async () => {
-      const t = await p.evaluate(() => [...document.querySelectorAll('.plan .price b')].map(b => b.textContent));
-      ok(t.join(',') === '790,1.690,3.500', 'valores: ' + t.join(','));
+    await test('planos sem preço: nenhuma mensalidade nos cartões, e o Conversar no pé de cada cartão', async () => {
+      /* pedido: tirar o preço dos planos (o Diagnóstico do Imóvel continua com o valor) */
+      const r = await p.evaluate(() => ({ n: document.querySelectorAll('.plan').length, price: document.querySelectorAll('.plan .price').length,
+        money: [...document.querySelectorAll('.plan')].filter(e => /R\$|\/mês|790|1\.690|3\.500/.test(e.textContent)).length,
+        cta: [...document.querySelectorAll('.plan')].map(e => { const a = e.querySelector('.plan-cta').getBoundingClientRect(), b = e.getBoundingClientRect(); return Math.round(b.bottom - a.bottom); }) }));
+      ok(r.n === 3, r.n + ' cartões');
+      ok(!r.price && !r.money, 'ainda há preço nos planos');
+      ok(r.cta.every(v => v < 64), 'Conversar longe do pé do cartão: ' + r.cta.join(','));
     });
     await test('comparativo no celular mostra um plano por vez', async () => {
       await p.evaluate(() => document.querySelector('.mx-seg button.p3').click());
