@@ -647,7 +647,7 @@ INTRO = '''<!-- ============ ABERTURA ANIMADA ============ -->
 LOCK = '<span class="lock" aria-hidden="true"><span class="wordmark"></span><span class="tagline">Governança residencial</span></span>'
 
 def header(cur, home=False):
-    nav = '\n'.join('      <a href="%s"%s>%s</a>' % (h, ' aria-current="page"' if h == cur else '', t) for h, t in NAV)
+    nav = '\n'.join('      <a href="%s"%s>%s</a>' % (h, ' aria-current="page"' if h == cur else '', t) for h, t in [('index.html', 'Início')] + NAV)
     return '''<header class="hdr" id="hdr">
   <div class="wrap">
     <a class="brand" href="index.html" aria-label="Pitangui Fernandes, página inicial">
@@ -795,7 +795,7 @@ TITLES = {
 
 def build():
     pages = {
-     'index.html': ('\n\n'.join([s01(), s02(), s03(), s04(), s05(), s06(), s07(), s08(), s09()]), dict(dark_top=True, ld=True, canon='')),
+     'index.html': ('\n\n'.join([s01(), s02(), s03(), s04(), s05(), s06(), s07(), s08(), s09()]), dict(cur='index.html', dark_top=True, ld=True, canon='')),
      'governanca.html': ('\n\n'.join([s03(True), escopo(), nxt('metodo.html', 'Como trabalhamos', 'Começamos entendendo a sua casa.', 'Da conversa à rotina, em quatro passos.')]), dict(cur='governanca.html')),
      'metodo.html': ('\n\n'.join([s04(True), diagnostico(), nxt('planos.html', 'Planos', 'Três formas de cuidar.', 'Essencial, Premium e Concierge.')]), dict(cur='metodo.html')),
      'planos.html': ('\n\n'.join([s05(True), nxt('familia.html', 'O nome', 'Um nome que responde por si.', 'Samuel, Diana e a herança de Sebastião Pitangui.')]), dict(cur='planos.html')),
