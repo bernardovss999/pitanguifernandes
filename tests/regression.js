@@ -41,16 +41,16 @@ function overlap(a, b) { return a && b && a.x < b.x + b.width && b.x < a.x + a.w
   console.log('\nCabeçalho e abertura no celular');
   for (const vp of [MOBILE, SMALL]) {
     const c = await ctx(vp, true); const p = await open(c, 'index.html', 4800);
-    await test(`${vp.width}px: logo do cabeçalho visível, WhatsApp e menu sem sobreposição`, async () => {
+    await test(`${vp.width}px: cabeçalho com logo e menu, sem WhatsApp no topo`, async () => {
       const r = await p.evaluate(() => {
         const box = s => { const e = document.querySelector(s); if (!e) return null; const b = e.getBoundingClientRect(); const cs = getComputedStyle(e); return { x: b.x, y: b.y, width: b.width, height: b.height, vis: cs.visibility !== 'hidden' && cs.display !== 'none' && +cs.opacity > .9 }; };
-        return { brand: box('.hdr .brand svg'), lock: box('.hdr .brand .lock'), wa: box('.hdr .hwa'), burger: box('#burger'), vw: innerWidth };
+        return { brand: box('.hdr .brand svg'), lock: box('.hdr .brand .lock'), waTop: !!document.querySelector('.hdr [href*="wa.me"], .hdr .hwa'), burger: box('#burger'), vw: innerWidth };
       });
       ok(r.brand && r.brand.vis && r.brand.width >= 24, 'monograma do cabeçalho invisível');
       ok(r.lock && r.lock.vis, 'nome da marca invisível no cabeçalho');
-      ok(r.wa && r.wa.vis && r.wa.width >= 40 && r.wa.height >= 40, 'ícone do WhatsApp ausente no cabeçalho (ou menor que 40px)');
+      ok(!r.waTop, 'há WhatsApp no cabeçalho (deve ficar só o botão do canto inferior direito)');
       ok(r.burger && r.burger.vis, 'botão do menu ausente');
-      ok(!overlap(r.lock, r.wa) && !overlap(r.wa, r.burger) && !overlap(r.lock, r.burger), 'elementos do cabeçalho se sobrepõem');
+      ok(!overlap(r.lock, r.burger), 'marca e menu se sobrepõem');
       ok(r.burger.x + r.burger.width <= r.vw + 1, 'menu sai da tela');
     });
     await test(`${vp.width}px: arte 3D do monograma no alto da primeira tela, com as cotas`, async () => {
@@ -86,14 +86,18 @@ function overlap(a, b) { return a && b && a.x < b.x + b.width && b.x < a.x + a.w
   console.log('\nTodas as páginas');
   for (const [vp, m] of [[SMALL, true], [MOBILE, true], [DESKTOP, false]]) {
     const c = await ctx(vp, m);
-    await test(`${vp.width}px: nenhuma página com rolagem horizontal, erro ou h1 duplicado`, async () => {
+    await test(`${vp.width}px: nenhuma página com rolagem horizontal, erro ou h1 duplicado; WhatsApp só no canto inferior direito`, async () => {
       const bad = [];
       for (const pg of PAGES) {
         const p = await open(c, pg + '.html', 300);
-        const r = await p.evaluate(w => ({ ov: Math.max(document.documentElement.scrollWidth, innerWidth) - w, h1: document.querySelectorAll('h1').length, wa: !!document.querySelector('.hdr .hwa') }), vp.width);
+        const r = await p.evaluate(w => { const b = document.querySelector('.wa-btn'), bb = b && b.getBoundingClientRect();
+          return { ov: Math.max(document.documentElement.scrollWidth, innerWidth) - w, h1: document.querySelectorAll('h1').length,
+            waTop: !!document.querySelector('.hdr [href*="wa.me"], .hdr .hwa'),
+            waCorner: !!bb && bb.width >= 44 && innerWidth - bb.right < 40 && innerHeight - bb.bottom < 40 && bb.left > innerWidth / 2 }; }, vp.width);
         if (r.ov > 0) bad.push(`${pg}: página ${r.ov}px mais larga que a tela`);
         if (r.h1 !== 1) bad.push(`${pg}: ${r.h1} h1`);
-        if (!r.wa) bad.push(`${pg}: sem WhatsApp no cabeçalho`);
+        if (r.waTop) bad.push(`${pg}: WhatsApp no cabeçalho`);
+        if (!r.waCorner) bad.push(`${pg}: botão do WhatsApp fora do canto inferior direito`);
         if (p.errors.length) bad.push(`${pg}: ${p.errors[0]}`);
         await p.close();
       }
@@ -169,14 +173,17 @@ function overlap(a, b) { return a && b && a.x < b.x + b.width && b.x < a.x + a.w
         const box = e => e && e.getBoundingClientRect();
         const links = [...document.querySelectorAll('.hdr .nav a')];
         return { names: links.map(a => a.textContent.trim()), first: links[0] && links[0].getAttribute('href'),
-          lock: box(document.querySelector('.hdr .brand')), nav: box(document.querySelector('.hdr .nav')), btn: box(document.querySelector('.hdr .btn')), wa: box(document.querySelector('.hdr .hwa')),
+          lock: box(document.querySelector('.hdr .brand')), nav: box(document.querySelector('.hdr .nav')), btn: box(document.querySelector('.hdr .btn')), wrap: box(document.querySelector('.hdr .wrap')),
+          waTop: !!document.querySelector('.hdr [href*="wa.me"], .hdr .hwa'), btnText: (document.querySelector('.hdr .btn') || {}).textContent,
           wrapped: links.some(a => a.getBoundingClientRect().height > 40) };
       });
       ok(r.names[0] === 'Início' && r.first === 'index.html', 'primeiro item: ' + r.names[0]);
       ok(r.names.join('|') === 'Início|Governança|Método|Planos|Família|Compromissos', r.names.join('|'));
       ok(r.lock.right + 16 <= r.nav.left, 'menu encosta na marca');
       ok(r.nav.right + 16 <= r.btn.left, 'menu encosta no Conversar');
-      ok(r.btn.right <= r.wa.left, 'Conversar encosta no WhatsApp');
+      ok(!r.waTop, 'há WhatsApp no cabeçalho');
+      ok(r.btnText.trim() === 'Conversar', 'botão do topo: ' + r.btnText);
+      ok(Math.abs(r.wrap.right - r.btn.right) <= 41, 'Conversar não fecha a linha do cabeçalho à direita');
       ok(!r.wrapped, 'algum item quebrou em duas linhas');
     });
     await c.close();
@@ -194,9 +201,21 @@ function overlap(a, b) { return a && b && a.x < b.x + b.width && b.x < a.x + a.w
     await c.close();
   }
 
+  {
+    const c = await ctx(DESKTOP); const p = await open(c, 'index.html', 4800);
+    await test('desktop: sem iluminação nem destaque seguindo o ponteiro do mouse na abertura', async () => {
+      await p.mouse.move(300, 300); await p.waitForTimeout(150); await p.mouse.move(900, 500); await p.waitForTimeout(300);
+      const r = await p.evaluate(() => { const h = document.querySelector('.hero'), cs = getComputedStyle(h, '::before');
+        return { mx: h.style.getPropertyValue('--mx'), my: h.style.getPropertyValue('--my'), bg: cs.content === 'none' ? 'none' : cs.backgroundImage }; });
+      ok(!r.mx && !r.my, 'a abertura ainda reage ao mouse');
+      ok(r.bg === 'none', 'ainda há luz sobre a abertura no desktop: ' + r.bg.slice(0, 60));
+    });
+    await c.close();
+  }
+
   console.log('\nLayout (nada pode sair do lugar)');
   await test('posição e tamanho dos blocos iguais à referência em 390 e 1440 px', async () => {
-    const base = JSON.parse(fs.readFileSync(layout.FILE, 'utf8'));
+    const base = await layout.baseline(browser);
     const d = layout.compare(base, await layout.measure(browser, U));
     ok(!d.length, d.length + ' diferenças: ' + d.slice(0, 4).join(' ; '));
   });
@@ -236,7 +255,7 @@ function overlap(a, b) { return a && b && a.x < b.x + b.width && b.x < a.x + a.w
     });
     await test('alvos de toque do cabeçalho e do menu com pelo menos 44 px', async () => {
       const p = await open(c, 'index.html', 4800);
-      const small = await p.evaluate(() => [...document.querySelectorAll('.hdr .hwa, #burger, .wa-btn')].filter(e => { const b = e.getBoundingClientRect(); return b.width < 44 || b.height < 44; }).map(e => e.className));
+      const small = await p.evaluate(() => [...document.querySelectorAll('#burger, .wa-btn')].filter(e => { const b = e.getBoundingClientRect(); return b.width < 44 || b.height < 44; }).map(e => e.className));
       ok(!small.length, 'pequenos: ' + small.join(', '));
     });
     await test('texto principal com contraste AA (corpo, títulos, rótulos) na home', async () => {

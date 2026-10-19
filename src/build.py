@@ -658,11 +658,10 @@ def header(cur, home=False):
 %s
     </nav>
     <a class="btn" href="%s"%s>Conversar</a>
-    <a class="hwa" href="%s" target="_blank" rel="noopener" aria-label="Conversar pelo WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" %s/></svg></a>
     <button class="burger" id="burger" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mnav"><span class="bt" aria-hidden="true"><b>Menu</b><b>Fechar</b></span><span class="bl" aria-hidden="true"><i></i><i></i></span></button>
   </div>
   <span class="prog" aria-hidden="true"></span>
-</header>''' % (LOCK, nav, '#conversar' if home else 'contato.html', ' aria-current="page"' if cur == 'contato.html' else '', WA, WAPATH)
+</header>''' % (LOCK, nav, '#conversar' if home else 'contato.html', ' aria-current="page"' if cur == 'contato.html' else '')
 
 def mnav(cur):
     items = [('index.html', 'Início')] + NAV
