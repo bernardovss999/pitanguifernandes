@@ -2571,10 +2571,12 @@ function overlap(a, b) { return a && b && a.x < b.x + b.width && b.x < a.x + a.w
         if (t[2].pm === ini.pm) bad.push(q + ' o + não gira para virar −');
         if (t[2].borda === ini.borda) bad.push(q + ' a linha da pergunta aberta não muda de cor');
         await p.click('#perguntas details:first-of-type summary');
-        const f = []; for (const ms of [80, 900]) { await p.waitForTimeout(ms - (f.length ? 80 : 0)); f.push(await estado(p)); }
-        if (!(f[0].h > 2 && f[0].h < t[2].h - 2)) bad.push(q + ' ao fechar, a resposta some de uma vez (' + Math.round(f[0].h) + ' px em 80 ms)');
-        if (f[1].open) bad.push(q + ' a pergunta não fechou');
-        if (f[1].laco) bad.push(q + ' ' + f[1].laco + ' animações em laço');
+        /* 22/10/2026: no GitHub Actions, mais lento, uma amostra só aos 80 ms às vezes caía antes do primeiro quadro do fechamento
+           (75 de 76 px); agora são três amostras e basta uma pegar a resposta no meio do caminho */
+        const f = [], tf = [80, 160, 260, 900]; for (let i = 0; i < tf.length; i++) { await p.waitForTimeout(tf[i] - (i ? tf[i - 1] : 0)); f.push(await estado(p)); }
+        if (!f.slice(0, 3).some(x => x.h > 2 && x.h < t[2].h - 2)) bad.push(q + ' ao fechar, a resposta some de uma vez (' + f.slice(0, 3).map(x => Math.round(x.h)).join(' → ') + ' px em 80, 160 e 260 ms)');
+        if (f[3].open) bad.push(q + ' a pergunta não fechou');
+        if (f[3].laco) bad.push(q + ' ' + f[3].laco + ' animações em laço');
         if (p.errors.length) bad.push(q + ' ' + p.errors[0]);
         await p.close();
       } finally { await c.close(); }
