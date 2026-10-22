@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://pitanguifernandes.com.br/sitemap.xml
+Sitemap: https://pitanguifernandes.vercel.app/sitemap.xml

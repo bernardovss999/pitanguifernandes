@@ -1,0 +1,7 @@
+# fora da publicação na Vercel: só o site gerado vai ao ar (ver README)
+/src/
+/tests/
+/.github/
+/node_modules/
+*.md
+/package*.json
