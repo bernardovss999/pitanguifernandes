@@ -17,9 +17,16 @@ async function measure(browser, U) {
       await p.addInitScript(() => { try { sessionStorage.setItem('pf-intro', '1'); sessionStorage.setItem('pf-wa-x', '1'); } catch (e) {} });
       await p.goto(U + pg + '.html', { waitUntil: 'load' });
       await p.evaluate(() => document.fonts.ready);
+      /* sem as fontes do site, as quebras de linha mudam e a comparação acusaria "layout" por motivo de ambiente */
+      const falta = await p.evaluate(() => ['--serif', '--sans'].map(v => getComputedStyle(document.documentElement).getPropertyValue(v).split(',')[0].trim().replace(/^["']|["']$/g, ''))
+        .filter(f => !f || ![...document.fonts].some(ff => ff.family.replace(/^["']|["']$/g, '') === f && ff.status === 'loaded') || !document.fonts.check('16px "' + f + '"')));
+      if (falta.length) throw new Error(`fontes não carregadas em ${pg}@${w}: ${falta.join(', ')}`);
       await p.addStyleTag({ content: '*,*::before,*::after{animation:none!important;transition:none!important}' });
       await p.evaluate(() => { document.body.classList.add('ready'); document.querySelectorAll('[data-r]').forEach(e => e.classList.add('in')); });
       await p.waitForTimeout(150);
+      /* uma face pode começar a carregar só depois da revelação (ex.: o itálico): espera de novo e não mede com fonte de reserva */
+      const pendentes = await p.evaluate(async () => { await document.fonts.ready; return [...document.fonts].filter(f => f.status === 'loading' || f.status === 'error').map(f => f.family + ' ' + f.style + ' ' + f.status); });
+      if (pendentes.length) throw new Error(`fontes não carregadas em ${pg}@${w}: ${pendentes.join(', ')}`);
       out[`${pg}@${w}`] = await p.evaluate(sel => {
         const r = {};
         /* alturas medidas a partir do início do conteúdo: a faixa da Sett muda de altura conforme a fonte do sistema */
@@ -57,10 +64,13 @@ function compare(base, cur) {
 async function baseline(browser) {
   const ref = process.env.LAYOUT_BASE;
   if (!ref) return JSON.parse(fs.readFileSync(FILE, 'utf8'));
-  const { execSync } = require('child_process'), os = require('os');
+  /* o ref vem do ambiente: só nome de branch, tag ou commit, e nunca passa por um shell */
+  if (!/^[\w.\/~^@{}-]+$/.test(ref)) throw new Error('LAYOUT_BASE inválido: ' + ref);
+  const { execFileSync } = require('child_process'), os = require('os');
   const { serve, ROOT } = require('./helpers');
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pf-base-'));
-  execSync(`git -C "${ROOT}" archive ${ref} | tar -x -C "${dir}"`);
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pf-base-')), tar = path.join(dir, 'base.tar');
+  execFileSync('git', ['-C', ROOT, 'archive', '--format=tar', '-o', tar, ref]);
+  execFileSync('tar', ['-x', '-f', tar, '-C', dir]); fs.rmSync(tar);
   const srv = await serve(dir);
   let base;
   try { base = await measure(browser, 'http://127.0.0.1:' + srv.address().port + '/'); }
@@ -69,7 +79,8 @@ async function baseline(browser) {
      A diferença entre as duas é o deslocamento declarado de cada bloco; ele é somado à medição da main,
      e qualquer outro movimento continua falhando */
   let old = null;
-  try { old = JSON.parse(execSync(`git -C "${ROOT}" show ${ref}:tests/layout-baseline.json`, { encoding: 'utf8', maxBuffer: 1 << 26 })); } catch (e) {}
+  /* sem montar comando de shell (REG-049): git recebe os argumentos separados */
+  try { old = JSON.parse(execFileSync('git', ['-C', ROOT, 'show', ref + ':tests/layout-baseline.json'], { encoding: 'utf8', maxBuffer: 1 << 26 })); } catch (e) {}
   return old ? declared(base, old, JSON.parse(fs.readFileSync(FILE, 'utf8'))) : base;
 }
 function declared(base, old, cur) {
