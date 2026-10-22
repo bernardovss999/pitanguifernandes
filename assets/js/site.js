@@ -179,7 +179,8 @@
           anim.onfinish=solta;
         } else {
           det.classList.add('fechando');
-          anim=box.animate([{height:de+'px'},{height:'0px'}],{duration:380,easing:'cubic-bezier(.65,0,.35,1)',fill:'forwards'});
+          /* fechar responde na hora: curva de saída rápida (a de entrada e saída lenta parecia travar no primeiro instante) */
+          anim=box.animate([{height:de+'px'},{height:'0px'}],{duration:360,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'});
           anim.onfinish=function(){ det.open=false; det.classList.remove('fechando'); anim.cancel(); solta(); };
         }
       });

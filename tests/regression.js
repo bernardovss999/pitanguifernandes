@@ -2571,10 +2571,12 @@ function overlap(a, b) { return a && b && a.x < b.x + b.width && b.x < a.x + a.w
         if (t[2].pm === ini.pm) bad.push(q + ' o + não gira para virar −');
         if (t[2].borda === ini.borda) bad.push(q + ' a linha da pergunta aberta não muda de cor');
         await p.click('#perguntas details:first-of-type summary');
-        const f = []; for (const ms of [80, 900]) { await p.waitForTimeout(ms - (f.length ? 80 : 0)); f.push(await estado(p)); }
-        if (!(f[0].h > 2 && f[0].h < t[2].h - 2)) bad.push(q + ' ao fechar, a resposta some de uma vez (' + Math.round(f[0].h) + ' px em 80 ms)');
-        if (f[1].open) bad.push(q + ' a pergunta não fechou');
-        if (f[1].laco) bad.push(q + ' ' + f[1].laco + ' animações em laço');
+        /* 22/10/2026: no GitHub Actions, mais lento, uma amostra só aos 80 ms às vezes caía antes do primeiro quadro do fechamento
+           (75 de 76 px); agora são três amostras e basta uma pegar a resposta no meio do caminho */
+        const f = [], tf = [80, 160, 260, 900]; for (let i = 0; i < tf.length; i++) { await p.waitForTimeout(tf[i] - (i ? tf[i - 1] : 0)); f.push(await estado(p)); }
+        if (!f.slice(0, 3).some(x => x.h > 2 && x.h < t[2].h - 2)) bad.push(q + ' ao fechar, a resposta some de uma vez (' + f.slice(0, 3).map(x => Math.round(x.h)).join(' → ') + ' px em 80, 160 e 260 ms)');
+        if (f[3].open) bad.push(q + ' a pergunta não fechou');
+        if (f[3].laco) bad.push(q + ' ' + f[3].laco + ' animações em laço');
         if (p.errors.length) bad.push(q + ' ' + p.errors[0]);
         await p.close();
       } finally { await c.close(); }
@@ -2584,6 +2586,28 @@ function overlap(a, b) { return a && b && a.x < b.x + b.width && b.x < a.x + a.w
         await p.evaluate(() => document.querySelector('#perguntas').scrollIntoView()); await p.click('#perguntas details:first-of-type summary'); await p.waitForTimeout(40);
         const r = await estado(p); if (!r.open || Math.abs(r.h - r.full) > 2) bad.push('movimento reduzido: a resposta não abre na hora (' + Math.round(r.h) + ' de ' + r.full + ')');
       } finally { await c.close(); } }
+    ok(!bad.length, bad.length + ' problemas: ' + bad.slice(0, 6).join(' | '));
+  });
+
+  await test('POL-013: a faixa da prévia usa a fonte do próprio site, não a do sistema: a altura dela (e a da abertura do celular, MEL-005) é a mesma em qualquer máquina; uma linha a partir de 768 px', async () => {
+    /* 22/10/2026: no Ubuntu do GitHub Actions a faixa, em system-ui, ficou mais alta e empurrou a abertura do celular (MEL-005
+       falhou lá: título a 370 px em 414×896, indicador fora da tela em 390×844), enquanto aqui passava */
+    const bad = [];
+    for (const [vp, m] of [[{ width: 320, height: 568 }, true], [MOBILE, true], [{ width: 414, height: 896 }, true], [{ width: 768, height: 1024 }, true], [DESKTOP, false]]) {
+      const c = await ctx(vp, m);
+      try {
+        const p = await open(c, 'index.html', 300);
+        const r = await p.evaluate(() => { const f = document.querySelector('.sett-faixa'); if (!f) return null; const cs = getComputedStyle(f), sans = getComputedStyle(document.documentElement).getPropertyValue('--sans').trim();
+          /* linhas pela altura do conteúdo dividida pela altura de linha (o logo e o link da faixa têm caixas próprias) */
+          const linhas = Math.round((f.getBoundingClientRect().height - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom)) / parseFloat(cs.lineHeight));
+          const norm = x => x.replace(/["'\s]/g, '');
+          return { fam: norm(cs.fontFamily), sans: norm(sans), linhas }; });
+        if (!r) { await p.close(); continue; }
+        if (r.fam !== r.sans) bad.push(vp.width + ' px: faixa em "' + r.fam + '" (a fonte do site é "' + r.sans + '")');
+        if (vp.width >= 768 && r.linhas > 1) bad.push(vp.width + ' px: faixa em ' + r.linhas + ' linhas');
+        await p.close();
+      } finally { await c.close(); }
+    }
     ok(!bad.length, bad.length + ' problemas: ' + bad.slice(0, 6).join(' | '));
   });
 
