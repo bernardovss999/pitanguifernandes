@@ -15,12 +15,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      # o HTML/CSS publicado precisa ser exatamente o que o gerador produz
+      # o que está publicado precisa ser exatamente o que o gerador produz, inclusive arquivos novos
       - name: Gerador reproduz os arquivos publicados
-        run: python3 src/build.py && git diff --exit-code
-      - run: npm install --no-audit --no-fund
+        run: python3 src/build.py && git status --porcelain && test -z "$(git status --porcelain)"
+      # o Pillow gera os WebP dos espaços de foto (chave FOTOS); o teste MEL-007 confere esse caminho quando ele está instalado
+      - run: pip install pillow
+      - run: npm ci --no-audit --no-fund
       - run: npx playwright install --with-deps chromium
+      # o layout é comparado com tests/layout-baseline.json, commitado junto com a mudança:
+      # as fontes são do próprio site, então a medição é a mesma em qualquer máquina
+      # (LAYOUT_BASE=<ref> continua disponível para comparar com outra versão, localmente)
       - run: npm test
-        env:
-          # o layout da mudança é comparado com o da main, medidos na mesma máquina
-          LAYOUT_BASE: origin/main

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="451" class="iso-art" viewBox="-203 -147 560 451" role="img" aria-label="Quatro pilares sustentam a casa">
+<style>.ln{stroke:#0C2448;stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}.gr{stroke:#DCE1E9;stroke-width:1;vector-effect:non-scaling-stroke}.ct,.tx{stroke:#A2A8B4;stroke-width:1;vector-effect:non-scaling-stroke}.tx2{stroke:#3A4E70;stroke-width:1.5;vector-effect:non-scaling-stroke}.sl{stroke:#fff;stroke-width:1;vector-effect:non-scaling-stroke}.tr{stroke:#A2A8B4;stroke-width:1;stroke-dasharray:4 4;vector-effect:non-scaling-stroke}</style>
+<polygon points="291.0,180.0 103.9,288.0 103.9,276.0 291.0,168.0" fill="#D5DBE4" class="ln"/>
+<polygon points="-187.1,120.0 103.9,288.0 103.9,276.0 -187.1,108.0" fill="#E6EAF0" class="ln"/>
+<polygon points="0.0,0.0 291.0,168.0 103.9,276.0 -187.1,108.0" fill="#FFFFFF" class="ln"/>
+<line x1="20.8" y1="12.0" x2="-166.3" y2="120.0" class="gr"/>
+<line x1="41.6" y1="24.0" x2="-145.5" y2="132.0" class="gr"/>
+<line x1="62.4" y1="36.0" x2="-124.7" y2="144.0" class="gr"/>
+<line x1="83.1" y1="48.0" x2="-103.9" y2="156.0" class="gr"/>
+<line x1="103.9" y1="60.0" x2="-83.1" y2="168.0" class="gr"/>
+<line x1="124.7" y1="72.0" x2="-62.4" y2="180.0" class="gr"/>
+<line x1="145.5" y1="84.0" x2="-41.6" y2="192.0" class="gr"/>
+<line x1="166.3" y1="96.0" x2="-20.8" y2="204.0" class="gr"/>
+<line x1="187.1" y1="108.0" x2="0.0" y2="216.0" class="gr"/>
+<line x1="207.8" y1="120.0" x2="20.8" y2="228.0" class="gr"/>
+<line x1="228.6" y1="132.0" x2="41.6" y2="240.0" class="gr"/>
+<line x1="249.4" y1="144.0" x2="62.4" y2="252.0" class="gr"/>
+<line x1="270.2" y1="156.0" x2="83.1" y2="264.0" class="gr"/>
+<line x1="-20.8" y1="12.0" x2="270.2" y2="180.0" class="gr"/>
+<line x1="-41.6" y1="24.0" x2="249.4" y2="192.0" class="gr"/>
+<line x1="-62.4" y1="36.0" x2="228.6" y2="204.0" class="gr"/>
+<line x1="-83.1" y1="48.0" x2="207.8" y2="216.0" class="gr"/>
+<line x1="-103.9" y1="60.0" x2="187.1" y2="228.0" class="gr"/>
+<line x1="-124.7" y1="72.0" x2="166.3" y2="240.0" class="gr"/>
+<line x1="-145.5" y1="84.0" x2="145.5" y2="252.0" class="gr"/>
+<line x1="-166.3" y1="96.0" x2="124.7" y2="264.0" class="gr"/>
+<g data-sys="c0" style="--k:1">
+<polygon points="22.9,61.2 4.2,72.0 4.2,-52.8 22.9,-63.6" fill="#D8DEE8" class="ln"/>
+<polygon points="-14.5,61.2 4.2,72.0 4.2,-52.8 -14.5,-63.6" fill="#EDF0F5" class="ln"/>
+<polygon points="4.2,-74.4 22.9,-63.6 4.2,-52.8 -14.5,-63.6" fill="#FFFFFF" class="ln"/>
+</g>
+<g data-sys="c1" style="--k:2">
+<polygon points="-64.4,111.6 -83.1,122.4 -83.1,-2.4 -64.4,-13.2" fill="#D8DEE8" class="ln"/>
+<polygon points="-101.8,111.6 -83.1,122.4 -83.1,-2.4 -101.8,-13.2" fill="#EDF0F5" class="ln"/>
+<polygon points="-83.1,-24.0 -64.4,-13.2 -83.1,-2.4 -101.8,-13.2" fill="#FFFFFF" class="ln"/>
+</g>
+<g data-sys="c2" style="--k:3">
+<polygon points="205.8,166.8 187.1,177.6 187.1,52.8 205.8,42.0" fill="#D8DEE8" class="ln"/>
+<polygon points="168.4,166.8 187.1,177.6 187.1,52.8 168.4,42.0" fill="#EDF0F5" class="ln"/>
+<polygon points="187.1,31.2 205.8,42.0 187.1,52.8 168.4,42.0" fill="#FFFFFF" class="ln"/>
+</g>
+<g data-sys="c3" style="--k:4">
+<polygon points="118.5,217.2 99.8,228.0 99.8,103.2 118.5,92.4" fill="#D8DEE8" class="ln"/>
+<polygon points="81.1,217.2 99.8,228.0 99.8,103.2 81.1,92.4" fill="#EDF0F5" class="ln"/>
+<polygon points="99.8,81.6 118.5,92.4 99.8,103.2 81.1,92.4" fill="#FFFFFF" class="ln"/>
+</g>
+<g data-sys="laje" style="--k:5">
+<polygon points="239.0,42.0 99.8,122.4 99.8,109.2 239.0,28.8" fill="#D8DEE8" class="ln"/>
+<polygon points="-135.1,-13.2 99.8,122.4 99.8,109.2 -135.1,-26.4" fill="#EDF0F5" class="ln"/>
+<polygon points="4.2,-106.8 239.0,28.8 99.8,109.2 -135.1,-26.4" fill="#FFFFFF" class="ln"/>
+</g>
+<g data-sys="casa" style="--k:6">
+<polygon points="149.6,10.8 70.7,56.4 70.7,-2.4 149.6,-48.0" fill="#D8DEE8" class="ln"/>
+<polygon points="-45.7,-10.8 70.7,56.4 70.7,-2.4 -45.7,-69.6" fill="#EDF0F5" class="ln"/>
+<polygon points="33.3,-115.2 149.6,-48.0 70.7,-2.4 -45.7,-69.6" fill="#FFFFFF" class="ln"/>
+<polygon points="-45.7,-69.6 70.7,-2.4 110.2,-63.6 -6.2,-130.8" fill="#EDF0F5" class="ln"/>
+<polygon points="149.6,-48.0 70.7,-2.4 110.2,-63.6" fill="#D8DEE8" class="ln"/>
+<polygon points="-29.1,-1.2 0.0,15.6 0.0,-24.0 -29.1,-40.8" fill="#D9C8B0" class="ln"/>
+<polygon points="16.6,7.2 54.0,28.8 54.0,4.8 16.6,-16.8" fill="#C9D7E5" class="ln"/>
+</g>
+<g class="base">
+<line x1="291.0" y1="180.0" x2="340.9" y2="180.0" class="ct"/>
+<line x1="291.0" y1="30.0" x2="340.9" y2="30.0" class="ct"/>
+<line x1="340.9" y1="180.0" x2="340.9" y2="30.0" class="ct"/>
+<line x1="340.9" y1="171.6" x2="340.9" y2="188.4" class="ct"/>
+<line x1="340.9" y1="21.6" x2="340.9" y2="38.4" class="ct"/>
+</g>
+</svg>
