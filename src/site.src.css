@@ -948,7 +948,9 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 @media (min-width:48em){.wa{right:1.75rem;bottom:1.75rem}.wa-btn{width:3.75rem;height:3.75rem}}
 
 /* ============ 12 FAIXA DE PRÉVIA (Sett) — remover quando o site virar oficial ============ */
-.sett-faixa{margin:0;max-width:none;padding:9px 16px;background:#0B0C0E;color:#B7BCC4;font:400 12.5px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-align:center;letter-spacing:.01em}
+/* a faixa usa a fonte do próprio site (POL-013): em system-ui a altura dela mudava de uma máquina para outra e, no celular,
+   empurrava a abertura para fora da primeira tela (o MEL-005 falhou no Ubuntu do GitHub e passava aqui) */
+.sett-faixa{margin:0;max-width:none;padding:9px 16px;background:#0B0C0E;color:#B7BCC4;font:400 12.5px/1.5 var(--sans);text-align:center;letter-spacing:.01em}
 .sett-faixa b{color:#FFFFFF;font-weight:600}
 .sett-faixa a{display:inline-block;vertical-align:middle;line-height:0;margin:-18px .1em;padding:18px .15em}
 .sett-faixa img{display:inline-block;height:1.1em;width:auto;max-width:none;margin-top:-.2em;border:0}
