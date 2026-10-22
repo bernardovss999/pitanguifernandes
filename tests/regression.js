@@ -2587,6 +2587,28 @@ function overlap(a, b) { return a && b && a.x < b.x + b.width && b.x < a.x + a.w
     ok(!bad.length, bad.length + ' problemas: ' + bad.slice(0, 6).join(' | '));
   });
 
+  await test('POL-013: a faixa da prévia usa a fonte do próprio site, não a do sistema: a altura dela (e a da abertura do celular, MEL-005) é a mesma em qualquer máquina; uma linha a partir de 768 px', async () => {
+    /* 22/10/2026: no Ubuntu do GitHub Actions a faixa, em system-ui, ficou mais alta e empurrou a abertura do celular (MEL-005
+       falhou lá: título a 370 px em 414×896, indicador fora da tela em 390×844), enquanto aqui passava */
+    const bad = [];
+    for (const [vp, m] of [[{ width: 320, height: 568 }, true], [MOBILE, true], [{ width: 414, height: 896 }, true], [{ width: 768, height: 1024 }, true], [DESKTOP, false]]) {
+      const c = await ctx(vp, m);
+      try {
+        const p = await open(c, 'index.html', 300);
+        const r = await p.evaluate(() => { const f = document.querySelector('.sett-faixa'); if (!f) return null; const cs = getComputedStyle(f), sans = getComputedStyle(document.documentElement).getPropertyValue('--sans').trim();
+          /* linhas pela altura do conteúdo dividida pela altura de linha (o logo e o link da faixa têm caixas próprias) */
+          const linhas = Math.round((f.getBoundingClientRect().height - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom)) / parseFloat(cs.lineHeight));
+          const norm = x => x.replace(/["'\s]/g, '');
+          return { fam: norm(cs.fontFamily), sans: norm(sans), linhas }; });
+        if (!r) { await p.close(); continue; }
+        if (r.fam !== r.sans) bad.push(vp.width + ' px: faixa em "' + r.fam + '" (a fonte do site é "' + r.sans + '")');
+        if (vp.width >= 768 && r.linhas > 1) bad.push(vp.width + ' px: faixa em ' + r.linhas + ' linhas');
+        await p.close();
+      } finally { await c.close(); }
+    }
+    ok(!bad.length, bad.length + ' problemas: ' + bad.slice(0, 6).join(' | '));
+  });
+
   await browser.close(); srv.close();
   const fail = results.filter(r => !r[0]);
   console.log(`\n${results.length - fail.length}/${results.length} testes passaram`);
