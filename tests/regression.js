@@ -940,8 +940,11 @@ function overlap(a, b) { return a && b && a.x < b.x + b.width && b.x < a.x + a.w
     ok(!bad.length, bad.length + ' textos cortados: ' + bad.slice(0, 6).join(' | '));
   });
 
-  await test('REG-021: vinheta de no máximo 1 s, só na primeira visita da sessão; texto da abertura legível cedo e LCP < 2,5 s (390 px, servidor local)', async () => {
-    const bad = [], c = await ctx(MOBILE, true);
+  /* 23/10/2026, decisão do dono: a vinheta volta a ser a original (cerca de 2,3 s, a cada chegada e a cada recarga; entre
+     páginas do próprio site, não). Antes (REG-021 de 19/10) ela durava ~1 s e só tocava na primeira página da sessão; o que
+     continua da correção de 19/10 é o texto da abertura pintado por baixo da vinheta, para o LCP não esperar a animação */
+  await test('REG-021: vinheta de abertura com cerca de 2,3 s, a cada chegada e a cada recarga, sem tocar ao navegar dentro do site; texto da abertura pintado por baixo e LCP < 2,5 s (390 px, servidor local)', async () => {
+    const bad = [], c = await browser.newContext({ viewport: MOBILE, isMobile: true, hasTouch: true });
     await c.addInitScript(() => {
       window.__t = {};
       const marca = () => { if (!__t.ready && document.body && document.body.classList.contains('ready')) __t.ready = performance.now(); };
@@ -950,19 +953,21 @@ function overlap(a, b) { return a && b && a.x < b.x + b.width && b.x < a.x + a.w
       (function some() { const i = document.getElementById('intro'); if (document.body && (!i || !i.isConnected)) { __t.semIntro = performance.now(); return; } requestAnimationFrame(some); })();
       try { new PerformanceObserver(l => { const e = l.getEntries(); __t.lcp = e[e.length - 1].startTime; }).observe({ type: 'largest-contentful-paint', buffered: true }); } catch (e) {}
     });
+    const tocou = p => p.evaluate(() => !!document.getElementById('intro') && !document.documentElement.classList.contains('no-intro'));
     try {
-      const p = await c.newPage(); await p.goto(U + 'index.html', { waitUntil: 'load' }); await p.waitForTimeout(3500);
+      const p = await c.newPage(); await p.goto(U + 'index.html', { waitUntil: 'load' }); await p.waitForTimeout(4200);
       const t1 = await p.evaluate(() => Object.assign({ intro: !document.documentElement.classList.contains('no-intro') }, __t));
-      if (!t1.intro) bad.push('primeira visita sem a vinheta');
-      if (!(t1.ready < 1200)) bad.push(`conteúdo liberado em ${Math.round(t1.ready)} ms (máx. 1200)`);
-      if (!(t1.semIntro < 1300)) bad.push(`vinheta na tela até ${Math.round(t1.semIntro)} ms (máx. ~1 s de animação)`);
-      if (!(t1.lead < 1800)) bad.push(`subtítulo legível em ${Math.round(t1.lead)} ms (máx. 1800)`);
+      if (!t1.intro) bad.push('chegada sem a vinheta');
+      if (!(t1.ready > 2000 && t1.ready < 2900)) bad.push(`conteúdo liberado em ${Math.round(t1.ready)} ms (a vinheta original libera em cerca de 2,35 s)`);
+      if (!(t1.semIntro > 2100 && t1.semIntro < 3800)) bad.push(`vinheta fora da tela em ${Math.round(t1.semIntro)} ms (esperado entre 2,1 e 3,8 s)`);
+      if (!(t1.lead < 1800)) bad.push(`subtítulo pintado em ${Math.round(t1.lead)} ms (máx. 1800, por baixo da vinheta)`);
       if (!(t1.lcp < 2500)) bad.push(`LCP ${Math.round(t1.lcp)} ms (máx. 2500)`);
-      /* recarga e volta à home na mesma sessão: sem vinheta */
+      /* recarga: a vinheta toca de novo */
       await p.reload({ waitUntil: 'load' }); await p.waitForTimeout(300);
-      if (await p.evaluate(() => !!document.getElementById('intro') && !document.documentElement.classList.contains('no-intro'))) bad.push('vinheta de novo na recarga');
-      await p.goto(U + 'governanca.html', { waitUntil: 'load' }); await p.goto(U + 'index.html', { waitUntil: 'load' }); await p.waitForTimeout(300);
-      if (await p.evaluate(() => !!document.getElementById('intro') && !document.documentElement.classList.contains('no-intro'))) bad.push('vinheta de novo ao voltar à home');
+      if (!(await tocou(p))) bad.push('a recarga não tocou a vinheta');
+      /* navegar dentro do site e voltar à home: sem vinheta */
+      await p.waitForTimeout(3500); await p.goto(U + 'governanca.html', { waitUntil: 'load' }); await p.goto(U + 'index.html', { waitUntil: 'load' }); await p.waitForTimeout(300);
+      if (await tocou(p)) bad.push('a vinheta tocou ao voltar à home por dentro do site');
     } finally { await c.close(); }
     ok(!bad.length, bad.join(' | '));
   });
