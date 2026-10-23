@@ -120,7 +120,7 @@ cria nenhum arquivo); só mescle na `main` com tudo verde.
 Publicação estática; cabeçalho (logo, menu, "Conversar" do celular ao desktop sem corte e com o texto inteiro dentro do botão, sem WhatsApp no topo);
 conteúdo da abertura logo abaixo do cabeçalho em todas as páginas (360 a 1920 px); caça de bugs no celular em todas as páginas
 (320/360/390/414 px: nada vazando da tela, texto sobre texto, imagem quebrada, letra menor que 11 px, com o comparativo aberto); arte 3D
-da abertura com as cotas; vinheta de cerca de 1 s só na primeira página da sessão e LCP; botão do WhatsApp no canto,
+da abertura com as cotas; vinheta original de cerca de 2,3 s a cada chegada e recarga (não ao navegar dentro do site), com o texto pintado por baixo e LCP; botão do WhatsApp no canto,
 sem balão nem animação; rolagem horizontal em 320, 360, 390 e 1440 px; erros no console (sob a CSP); menu, Esc, foco
 preso no menu aberto; tom do cabeçalho e cabeçalho opaco; "Início" no menu; planos sem valores (e com, pela chave),
 nível em anel 1/2/4, comparativo um plano por vez e a 320 px; formulário (validação, WhatsApp pela constante, máscara

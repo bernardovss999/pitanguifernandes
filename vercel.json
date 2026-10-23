@@ -12,7 +12,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'sha256-TRSpz0IuqXoROo8Pn6P+xvev/bJlSFfmqBbaJWFH6Ss=' 'sha256-xIrZheZlfiTsxs1nCsYrCfb40YaAyytPGd6wd35AgeA=' 'unsafe-hashes' 'sha256-NXgJIJJYQbjLZDdAmJyEXQ0ldk+Rf0iQY7WdZ1mQrZ4='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+          "value": "default-src 'self'; script-src 'self' 'sha256-h+v3BPvi0bAefUGxZ0pjkhpPW7jcY95hLh+l159ou3A=' 'sha256-xIrZheZlfiTsxs1nCsYrCfb40YaAyytPGd6wd35AgeA=' 'unsafe-hashes' 'sha256-NXgJIJJYQbjLZDdAmJyEXQ0ldk+Rf0iQY7WdZ1mQrZ4='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
         },
         {
           "key": "X-Content-Type-Options",

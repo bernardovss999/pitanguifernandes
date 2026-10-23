@@ -21,7 +21,9 @@
   } else { targets.forEach(function(t){ t.classList.add('in'); }); }
 
   /* ---------- abertura animada + entrada da página ---------- */
-  /* só na primeira página vista na sessão (o script do <head> marca no-intro nas seguintes); dura cerca de 1 s */
+  /* toca a cada chegada e a cada recarga, por cerca de 2,35 s; entre páginas do próprio site, não (decisão do dono em
+     23/10/2026: a vinheta original de volta). Ao sair de uma página, marca pf-nav; o script do <head> lê e pula a vinheta */
+  window.addEventListener('pagehide',function(){ try{sessionStorage.setItem('pf-nav',Date.now())}catch(e){} });
   var intro=d.getElementById('intro'), hartOk=null;
   function ready(delay){ html.style.setProperty('--h0',(delay||0)+'s'); body.classList.add('ready');
     /* a entrada do monograma dura cerca de 2 s; só depois ele passa a acompanhar o mouse no PC (POL-002), sem atropelar a chegada */
@@ -29,10 +31,10 @@
   if(reduce || html.classList.contains('no-intro') || !intro){ if(intro) intro.remove(); ready(.05); }
   else{
     void intro.offsetWidth; setTimeout(function(){ intro.classList.add('go'); }, 20);
-    setTimeout(function(){ intro.classList.add('out'); ready(.06); }, 600);
+    setTimeout(function(){ intro.classList.add('out'); ready(.06); }, 2350);
     var gone=false; function bye(){ if(!gone){ gone=true; intro.remove(); } }
     intro.querySelector('.ip-b').addEventListener('transitionend',bye);
-    setTimeout(bye, 1150);
+    setTimeout(bye, 3500);
   }
 
   /* ---------- cabeçalho: transparente na abertura; ao rolar, toma o tom da seção que passa por baixo ---------- */

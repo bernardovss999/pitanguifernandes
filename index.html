@@ -52,7 +52,7 @@
   ]
 }
 </script>
-<script>(function(h){h.classList.add('js');try{if(sessionStorage.getItem('pf-intro'))h.classList.add('no-intro');else sessionStorage.setItem('pf-intro','1')}catch(e){}setTimeout(function(){var d=document,b=d.body,i=d.getElementById('intro');if(window.__pf||!b)return;h.classList.add('pf-ja');if(i)i.remove();b.classList.add('ready');d.querySelectorAll('[data-r]').forEach(function(e){e.classList.add('in')});setTimeout(function(){h.classList.remove('pf-ja')},60)},600)})(document.documentElement)</script>
+<script>(function(h){h.classList.add('js');try{var n=performance.getEntriesByType('navigation')[0],v=+sessionStorage.getItem('pf-nav');sessionStorage.removeItem('pf-nav');if(sessionStorage.getItem('pf-intro')||(n&&n.type!=='reload'&&v&&Date.now()-v<15000))h.classList.add('no-intro')}catch(e){}setTimeout(function(){var d=document,b=d.body,i=d.getElementById('intro');if(window.__pf||!b)return;h.classList.add('pf-ja');if(i)i.remove();b.classList.add('ready');d.querySelectorAll('[data-r]').forEach(function(e){e.classList.add('in')});setTimeout(function(){h.classList.remove('pf-ja')},60)},600)})(document.documentElement)</script>
 </head>
 <body class="top-dark">
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
