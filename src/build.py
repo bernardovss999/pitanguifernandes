@@ -865,11 +865,14 @@ def matrix():
     return '\n'.join(o)
 
 # ===================================================================== moldura da página
-# a vinheta só na primeira página vista na sessão (nem em recargas, nem ao voltar à home).
+# a vinheta toca a cada chegada e a cada recarga; ao navegar entre páginas do próprio site (o site.js marca pf-nav ao sair de
+# uma página; vale por 15 s), não. Decisão do dono em 23/10/2026: volta a vinheta original (REG-021 revisto).
+# pf-intro no sessionStorage é só um desligamento manual (o site não o marca): os testes e a equipe usam para pular a vinheta.
 # Rede de segurança: se o site.js não começar em 600 ms (rede lenta), a página aparece inteira na hora,
 # sem vinheta e sem as entradas animadas (o site.js marca window.__pf quando roda).
-HEAD_JS = ("<script>(function(h){h.classList.add('js');try{if(sessionStorage.getItem('pf-intro'))h.classList.add('no-intro');"
-           "else sessionStorage.setItem('pf-intro','1')}catch(e){}setTimeout(function(){var d=document,b=d.body,i=d.getElementById('intro');"
+HEAD_JS = ("<script>(function(h){h.classList.add('js');try{var n=performance.getEntriesByType('navigation')[0],v=+sessionStorage.getItem('pf-nav');"
+           "sessionStorage.removeItem('pf-nav');if(sessionStorage.getItem('pf-intro')||(n&&n.type!=='reload'&&v&&Date.now()-v<15000))h.classList.add('no-intro')"
+           "}catch(e){}setTimeout(function(){var d=document,b=d.body,i=d.getElementById('intro');"
            "if(window.__pf||!b)return;h.classList.add('pf-ja');if(i)i.remove();b.classList.add('ready');"
            "d.querySelectorAll('[data-r]').forEach(function(e){e.classList.add('in')});setTimeout(function(){h.classList.remove('pf-ja')},60)},600)})(document.documentElement)</script>")
 def ld_json():
