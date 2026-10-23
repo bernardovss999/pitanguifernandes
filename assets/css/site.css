@@ -217,26 +217,26 @@ button.tlink{background:none;border:0;cursor:pointer;padding-inline:0}
 .no-intro .intro,html:not(.js) .intro{display:none}
 /* rede de segurança (script do head): com o site.js atrasado, tudo aparece de uma vez, sem transição */
 .pf-ja *,.pf-ja *::before,.pf-ja *::after{transition:none!important}
-.intro .ip{position:absolute;inset:0;background:radial-gradient(120% 90% at 18% 30%,#0E2A52 0%,#071B36 62%);transition:transform .45s cubic-bezier(.76,0,.24,1)}
+.intro .ip{position:absolute;inset:0;background:radial-gradient(120% 90% at 18% 30%,#0E2A52 0%,#071B36 62%);transition:transform .7s cubic-bezier(.76,0,.24,1)}
 .intro .ip-a{clip-path:polygon(0 0,100% 0,100% calc(50% - 28.87vw + 1px),0 calc(50% + 28.87vw + 1px))}
 .intro .ip-b{clip-path:polygon(0 calc(50% + 28.87vw),100% calc(50% - 28.87vw),100% 100%,0 100%)}
 .intro.out .ip-a{transform:translate3d(-38vmax,-66vmax,0)}
 .intro.out .ip-b{transform:translate3d(38vmax,66vmax,0)}
-.intro .iline{position:absolute;left:50%;top:50%;width:160vmax;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(221,226,234,.75) 50%,rgba(255,255,255,0));transform:translate(-50%,-50%) rotate(-30deg) scaleX(0);transition:transform .25s cubic-bezier(.65,0,.35,1) .3s,opacity .3s ease}
+.intro .iline{position:absolute;left:50%;top:50%;width:160vmax;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(221,226,234,.75) 50%,rgba(255,255,255,0));transform:translate(-50%,-50%) rotate(-30deg) scaleX(0);transition:transform .35s cubic-bezier(.65,0,.35,1) 2.05s,opacity .4s ease}
 .intro.go .iline{transform:translate(-50%,-50%) rotate(-30deg) scaleX(1)}
-.intro.out .iline{opacity:0;transition:opacity .2s ease}
-.intro-in{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:.875rem;transition:opacity .2s ease .45s,transform .3s var(--ease) .45s}
+.intro.out .iline{opacity:0;transition:opacity .3s ease}
+.intro-in{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:.875rem;transition:opacity .3s ease 1.95s,transform .6s var(--ease) 1.95s}
 .intro.go .intro-in{opacity:0;transform:scale(.985)}
 .intro .imono{width:2.875rem;height:auto;overflow:visible;flex:none}
 /* o traço percorre o monograma em meio segundo, o preenchimento chega no fim do traço */
-.intro .imono path{stroke:#fff;stroke-width:1.3;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:1;fill:#fff;fill-opacity:0;transition:stroke-dashoffset .45s cubic-bezier(.65,0,.35,1),fill-opacity .25s ease .25s,stroke-opacity .2s ease .4s}
-.intro .imono .m2{fill:var(--cinza);transition-delay:.06s,.3s,.42s}
+.intro .imono path{stroke:#fff;stroke-width:1.3;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:1;fill:#fff;fill-opacity:0;transition:stroke-dashoffset 1.15s cubic-bezier(.65,0,.35,1),fill-opacity .45s ease .85s,stroke-opacity .4s ease 1.1s}
+.intro .imono .m2{fill:var(--cinza);transition-delay:.14s,.98s,1.24s}
 .intro.go .imono path{stroke-dashoffset:0;fill-opacity:1;stroke-opacity:0}
 .intro .ilock{display:flex;flex-direction:column;gap:.375rem;width:10.75rem;color:#fff;clip-path:none;container-type:inline-size}
 .intro .iwm{display:block;clip-path:inset(0 -2% 0 0)}
-.intro .ilock .wordmark{width:100%;transform:translateY(110%);transition:transform .35s var(--ease) .1s}
+.intro .ilock .wordmark{width:100%;transform:translateY(110%);transition:transform .7s var(--ease) .45s}
 .intro.go .ilock .wordmark{transform:none}
-.intro .tagline{opacity:0;letter-spacing:1.1em;transition:opacity .3s ease .15s,letter-spacing .4s var(--ease) .15s}
+.intro .tagline{opacity:0;letter-spacing:1.1em;transition:opacity .5s ease .65s,letter-spacing .9s var(--ease) .65s}
 .intro.go .tagline{opacity:.78;letter-spacing:.52em}
 @media (max-width:47.9375em){.intro.go .tagline{letter-spacing:.26em}.intro .tagline{margin-right:-.26em}}
 @media (min-width:48em){.intro-in{gap:1.125rem}.intro .imono{width:3.875rem}.intro .ilock{width:14.75rem;gap:.5rem}}
